@@ -1,0 +1,1648 @@
+{
+  "query_id": "s99",
+  "query_text": "<p>I am trying to understand how the DQN algorithm with RNNs works in PyTorch's RL API through this <a href=\"https://docs.pytorch.org/rl/stable/tutorials/dqn_with_rnn.html\" rel=\"nofollow noreferrer\">tutorial</a>. However, the way some of the classes handle episodes and batches during training are unclear to me.</p>\n<p>I noticed that <code>SyncDataCollector</code> stitches episodes together into the same TensorDict until it reaches the desired number of frames per batch. I am wondering if this means that during training, the DQNLoss treats all these stitched episodes as a single trajectory or if it knows to separate them back into individual episodes. If they are treated as one, wouldn't this mix different trajectories and affect learning? Additionally, does the replay buffer randomly sample states and actions without tracking which episode they belong to, potentially mixing unrelated data?</p>",
+  "mode": "hybrid",
+  "top_k": 10,
+  "chunks": [
+    {
+      "reference_id": "4",
+      "content": "Get started with logging\n\nGet started with your own first training loop\n\nTUTORIALS\n\nBasics\n\nReinforcement Learning (PPO) with TorchRL Tutorial\n\nPendulum: Writing your environment and transforms with TorchRL\n\nIntroduction to TorchRL\n\nIntermediate\n\nMulti-Agent Reinforcement Learning (PPO) with TorchRL Tutorial\n\nTorchRL envs\n\nUsing pretrained models\n\nRecurrent DQN: Training recurrent policies\n\nUsing Replay Buffers\n\nExporting TorchRL modules\n\nTorchRL LLM: Building Tool-Enabled Environments\n\nAdvanced\n\nCompetitive Multi-Agent Reinforcement Learning (DDPG) with TorchRL Tutorial\n\nTask-specific policy in multi-task environments\n\nTorchRL objectives: Coding a DDPG loss\n\nTorchRL trainer: A DQN example\n\nREFERENCES\n\nAPI Reference\n\ntorchrl.collectors package\n\nCollectors and batch size\n\nCollectors and policy copies\n\nWeight Synchronization in Distributed Environments\n\nCollectors and replay buffers interoperability\n\nRunning the Collector Asynchronously\n\nSingle node data collectors\n\nDistributed data collectors\n\nHelper functions\n\ntorchrl.data package\n\nReplay Buffers\n\nComposable Replay Buffers\n\nTorchRL",
+      "file_path": "s99_doc_13",
+      "chunk_id": "chunk-4a65943335c543052694c5789b4a0e68"
+    },
+    {
+      "reference_id": "2",
+      "content": "Transform` or a :class:`~torchrl.data.postprocs. MultiStep`\ninstance.\nDefaults to ``None``. split_trajs (bool, optional): Boolean indicating whether the resulting\nTensorDict should be split according to the trajectories. See :func:`~torchrl.collectors.utils.split_trajectories` for more\ninformation. Defaults to ``False``.\nexploration_type (ExplorationType, optional): interaction mode to be used when\ncollecting data. Must be one of ``torchrl.envs.utils. ExplorationType. DETERMINISTIC``,\n``torchrl.envs.utils. ExplorationType. RANDOM``, ``torchrl.envs.utils. ExplorationType. MODE``\nor ``torchrl.envs.utils. ExplorationType. MEAN``. return_same_td (bool, optional): if ``True``, the same TensorDict\nwill be returned at each iteration, with its values\nupdated. This feature should be used cautiously: if the same\ntensordict is added to a replay buffer for instance,\nthe whole content of the buffer will be identical. Default is ``False``.\ninterruptor (_Interruptor, optional):\nAn _Interruptor object that can be used from outside the class to control rollout collection.",
+      "file_path": "s99_doc_5",
+      "chunk_id": "chunk-f6fa2b2fc99b8111ced6c41ce980c268"
+    },
+    {
+      "reference_id": "2",
+      "content": "Get started with Environments, TED and transforms\nGet started with TorchRL’s modules\nGetting started with model optimization\nGet started with data collection and storage\nGet started with logging\nGet started with your own first training loop\nReinforcement Learning (PPO) with TorchRL Tutorial\nPendulum: Writing your environment and transforms with TorchRL\nIntroduction to TorchRL\nMulti-Agent Reinforcement Learning (PPO) with TorchRL Tutorial\nTorchRL envs\nUsing pretrained models\nRecurrent DQN: Training recurrent policies\nUsing Replay Buffers\nExporting TorchRL modules\nCompetitive Multi-Agent Reinforcement Learning (DDPG) with TorchRL Tutorial\nTask-specific policy in multi-task environments\nTorchRL objectives: Coding a DDPG loss\nTorchRL trainer: A DQN example\nAPI Reference\nKnowledge Base\nDocs\n>\nModule code >\ntorchrl.collectors.collectors\nShortcuts\nSource code for torchrl.collectors.collectors\n# Copyright (c) Meta Platforms, Inc. and affiliates. #\n# This source code is licensed under the MIT license found in the\n# LICENSE file in the root directory of this source tree.\nfrom __future__",
+      "file_path": "s99_doc_5",
+      "chunk_id": "chunk-79d9cf783011ad9fe630e246831ed2e7"
+    },
+    {
+      "reference_id": "3",
+      "content": "To avoid this issue, consider one of these solutions:\n\nusing a  TensorDictReplayBuffer  instance with the slice sampler\n\nusing a  SliceSamplerWithoutReplacement\n\n>>> import torch\n>>> from tensordict import TensorDict\n>>> from torchrl.collectors.utils import\nsplit_trajectories\n>>> from torchrl.data import ReplayBuffer,\nLazyTensorStorage, SliceSampler,\nSliceSamplerWithoutReplacement\n>>> rb =\nReplayBuffer(storage=LazyTensorStorage(max_size=1000),\nsampler=SliceSamplerWithoutReplacement(\n...                       slice_len=5,\ntraj_key=\"episode\",strict_length=False\n>>> ep_1 = TensorDict(\n...     {\"obs\": torch.arange(100),\n...     \"episode\": torch.zeros(100),},\n...     batch_size=[100]\n>>> ep_2 = TensorDict(\n...     {\"obs\": torch.arange(4),\n...     \"episode\": torch.ones(4),},\n...     batch_size=[4]\n>>> rb.extend(ep_1)\n>>> rb.extend(ep_2)\n>>> s = rb.sample(50)\n>>> t = split_trajectories(s,\ntrajectory_key=\"episode\")\n>>> print(t[\"obs\"])\ntensor([[75, 76, 77, 78, 79],\n        [ 0,  1,  2,  3,  0]])\n>>> print(t[\"episode\"])\ntensor([[0., 0., 0., 0., 0.],",
+      "file_path": "s99_doc_6",
+      "chunk_id": "chunk-ecbb3dcaa6672db6fe09532b3bebaf1a"
+    },
+    {
+      "reference_id": "5",
+      "content": "The collected data is stored in the provided replay buffer. This method is useful when you want to decouple data collection from training, allowing your\ntraining loop to run independently of the data collection process. Raises:\n\nRuntimeError – If no replay buffer is defined during the collector’s initialization. Example\n\n>>> from torchrl.modules import RandomPolicy            >>>             >>> import time\n>>> from functools import partial\n>>> import tqdm\n>>> from torchrl.collectors import Collector\n>>> from torchrl.data import LazyTensorStorage, ReplayBuffer\n>>> from torchrl.envs import GymEnv, set_gym_backend\n>>> import ale_py\n>>> # Set the gym backend to gymnasium\n>>> set_gym_backend(\"gymnasium\").set()\n>>> if __name__ == \"__main__\":\n...     # Create a random policy for the Pong environment\n...     env = GymEnv(\"ALE/Pong-v5\")\n...     policy = RandomPolicy(env.action_spec)\n...     # Initialize a shared replay buffer\n... rb = ReplayBuffer(storage=LazyTensorStorage(1000), shared=True)\n...",
+      "file_path": "s99_doc_1",
+      "chunk_id": "chunk-dbe55d5032b00c06d132f9d964cfb3b8"
+    },
+    {
+      "reference_id": "3",
+      "content": "episode[700:] = 4\n>>> data = TensorDict(\n...         \"episode\": episode,\n...         \"obs\": torch.randn((3, 4, 5)).expand(1000, 3, 4, 5),\n...         \"act\": torch.randn((20,)).expand(1000, 20),\n...         \"other\": torch.randn((20, 50)).expand(1000, 20, 50),\n...     }, [1000]\n>>> rb.extend(data)\n>>> sample = rb.sample()\n>>> print(\"sample:\", sample)\n>>> print(\"episodes\", sample.get(\"episode\").unique())\nepisodes tensor([1, 2, 3, 4], dtype=torch.int32)\n\nSliceSampler is default-compatible with most of TorchRL’s datasets:\n\nExamples\n\n>>> import torch\n>>> from torchrl.data.datasets import RobosetExperienceReplay\n>>> from torchrl.data import SliceSampler\n>>> torch.manual_seed(0)\n>>> num_slices = 10\n>>> dataid = list(RobosetExperienceReplay.available_datasets)[0]\n>>> data = RobosetExperienceReplay(dataid, batch_size=320, sampler=SliceSampler(num_slices=num_slices))\n>>> for batch in data:\n...     batch = batch.reshape(num_slices, -1)\n...     break\n>>> print(\"check that each batch only has one episode:\", batch[\"episode\"].unique(dim=1))\ncheck that each batch only has one episode: tensor([[19],",
+      "file_path": "s99_doc_6",
+      "chunk_id": "chunk-c8093f768d95a8aa0cf442c469e84649"
+    },
+    {
+      "reference_id": "6",
+      "content": "Use the sync parameter to choose between synchronous and asynchronous collection:\n\nfrom torchrl.collectors import MultiCollector\n\n# Synchronous collection: all workers complete before delivering batch\ncollector = MultiCollector(\n    create_env_fn=[make_env] * 4,  # 4 parallel workers\n    policy=my_policy,\n    frames_per_batch=200,\n    total_frames=10000,\n    sync=True,  # synchronized delivery\n\n# Asynchronous collection: first-come-first-serve delivery\ncollector = MultiCollector(\n    create_env_fn=[make_env] * 4,\n    policy=my_policy,\n    frames_per_batch=200,\n    total_frames=10000,\n    sync=False,  # async delivery (faster, but policy may lag)\n\nWhen to use sync vs async:\n\nsync=True: Use for on-policy algorithms (PPO, A2C) where data must match current\n\nsync=False: Use for off-policy algorithms (SAC, DQN) where slight policy lag is\n\npolicy\n\nacceptable\n\nKey Features\n\nFlexible execution: Choose\n\nDevice management: Control\n\nWeight synchronization: Keep\n\nReplay buffer integration:\n\nBatching strategies: Multiple\n\nbetween sync, async, and\n\nwhere environments and policies\n\ninference policies up-to-date with\n\nSeamless compatibility with\n\nways to organize collected data\n\ndistributed collection\n\nexecute\n\ntraining weights\n\nTorchRL’s replay buffers\n\nQuick Example\n\nfrom torchrl.collectors import Collector\nfrom torchrl.envs import GymEnv, ParallelEnv\n\n# Create a batched environment\ndef make_env():\n    return GymEnv(\"Pendulum-v1\")\n\nenv = ParallelEnv(4, make_env)\n\n# Create collector\ncollector = Collector(\n    env,\n    policy=my_policy,\n    frames_per_batch=200,\n    total_frames=10000,\n\n# Collect data\nfor data in collector:\n    # data is a TensorDict with shape [4, 50] (4 envs, 50 steps each)\n    # Use data for training...\n\n    # Update policy weights periodically\n    if should_update:\n        collector.update_policy_weights_()\n\ncollector.shutdown()\n\nLegacy names\n\nThe following names are kept for backward compatibility:",
+      "file_path": "s99_doc_9",
+      "chunk_id": "chunk-21b1e86e509c35abb70f64a8e04dc2d3"
+    },
+    {
+      "reference_id": "3",
+      "content": "[1., 1., 1., 1., 0.]])\n\n>>> import torch\n>>> from tensordict import TensorDict\n>>> from torchrl.collectors.utils import split_trajectories\n>>> from torchrl.data import TensorDictReplayBuffer,\nReplayBuffer, LazyTensorStorage, SliceSampler,\nSliceSamplerWithoutReplacement\n>>> rb =\nTensorDictReplayBuffer(storage=LazyTensorStorage(max_size=1000),\n...                   sampler=SliceSampler(\n...                       slice_len=5,\ntraj_key=\"episode\",strict_length=False,\n>>> ep_1 = TensorDict(\n...     {\"obs\": torch.arange(100),\n...     \"episode\": torch.zeros(100),},\n...     batch_size=[100]\n>>> ep_2 = TensorDict(\n...     {\"obs\": torch.arange(4),\n...     \"episode\": torch.ones(4),},\n...     batch_size=[4]\n>>> rb.extend(ep_1)\n>>> rb.extend(ep_2)\n>>> s = rb.sample(50)\n>>> print(s)\nTensorDict(\n    fields={\n        episode: Tensor(shape=torch. Size([46]), device=cpu,\ndtype=torch.float32, is_shared=False),\n        index: Tensor(shape=torch. Size([46, 1]), device=cpu,\ndtype=torch.int64, is_shared=False),\n        next: TensorDict(\n            fields={\n                done: Tensor(shape=torch. Size([46, 1]),\ndevice=cpu, dtype=torch.bool, is_shared=False),\n                terminated: Tensor(shape=torch.",
+      "file_path": "s99_doc_6",
+      "chunk_id": "chunk-44007b0350c6dcc987adac3462d4b07e"
+    },
+    {
+      "reference_id": "7",
+      "content": "Again, our sample looks exactly the same as the data we gathered from the collector! Next steps\n\nYou can have look at other multiprocessed collectors such as MultiSyncDataCollector or MultiaSyncDataCollector. TorchRL also offers distributed collectors if you have multiple nodes to use for inference. Check them out in the API reference. Check the dedicated Replay Buffer tutorial to know more about the options you have when building a buffer, or the API reference which covers all the features in details. Replay buffers\n\nhave countless features such as multithreaded sampling, prioritized experience replay, and many more…\n\nWe left out the capacity of replay buffers to be iterated over for simplicity. Try it out for yourself: build a buffer and indicate its batch-size in the constructor, then try to iterate over it. This is equivalent to calling rb.sample() within a loop! Previous\n\nNext\n\n© Copyright 2022, Meta.\nBuilt with Sphinx using a theme provided by Read the Docs.",
+      "file_path": "s99_doc_14",
+      "chunk_id": "chunk-4d043d6fd0b0362ad3d00667742da9c0"
+    },
+    {
+      "reference_id": "4",
+      "content": "TensorDict modules: Actors, exploration, value models and generative models\n\nHooks\n\nModels\n\nExploration\n\nPlanners\n\nDistributions\n\nUtils\n\ntorchrl.objectives package\n\ntorch.vmap and randomness\n\nTraining value functions\n\nDQN\n\nDDPG\n\nSAC\n\nREDQ\n\nCrossQ\n\nIQL\n\nCQL\n\nGAIL\n\nDT\n\nTD3\n\nTD3+BC\n\nPPO\n\nA2C\n\nReinforce\n\nDreamer\n\nMulti-agent objectives\n\nReturns\n\nUtils\n\ntorchrl.trainers package\n\nCheckpointing\n\nTrainer and hooks\n\nBuilders\n\nUtils\n\nLoggers\n\nRecording utils\n\ntorchrl._utils package\n\nimplement_for\n\nset_auto_unwrap_transformed_env\n\nauto_unwrap_transformed_env\n\nKNOWLEDGE BASE\n\nKnowledge Base\n\nContributing\n\nThings to consider when debugging RL\n\nWorking with gym\n\nWorking with habitat-lab\n\nWorking with MuJoCo-based environments\n\nCommon PyTorch errors and solutions\n\nUseful resources\n\nVersioning Issues\n\nCustomising Video Renders\n\nINDICES AND TABLES\n\nIndex\n\nModule Index\n\nSearch Page\n\n© Copyright 2022, Meta.\nBuilt with Sphinx using a theme provided by Read the Docs.",
+      "file_path": "s99_doc_13",
+      "chunk_id": "chunk-b15d1dab67b1739a10b83a2310c64a30"
+    },
+    {
+      "reference_id": "1",
+      "content": "@vmoens\n\n[Feature] DAPO ( 9d5c276 )\n\nImplements Direct Advantage Policy Optimization for LLM training\n\nAdds DAPO-speciﬁc loss computation to  torchrl/objectives/llm/grpo.py\n\n[Feature] CISPO ( ed0d8dc )\n\nImplements Clipped Importance Sampling Policy Optimization\n\nAlternative to PPO/GRPO with diﬀerent clipping strategy\n\n[Refactor] Refactor GRPO as a separate class ( 2bc3cb7 )\n\nSeparates GRPO implementation for better modularity\n\nTrainer Infrastructure\n\nNew trainer algorithms, conﬁguration system, and utilities. @vmoens\n\n[Trainers] SAC Trainer and algorithms ( 02d4bfd )\n\nNew SAC Trainer implementation with 786 lines of code\n\nComplete sota-implementation in  sota-implementations/sac_trainer/\n\nTrainer conﬁguration via YAML ﬁles\n\n[Feature] Trainer Algorithms - Conﬁguration System ( 6bc201a )\n\nNew conﬁguration system in  torchrl/trainers/algorithms/configs/\n\nConﬁgs for collectors, data, modules, objectives, transforms, weight sync\nschemes\n\nEnables hydra-style conﬁguration composition [Feature] Trainer Infrastructure - Timing and Utilities ( dc21523 )\n\nAdds timing utilities to trainer infrastructure\n\n263 lines of enhanced trainer functionality",
+      "file_path": "s99_doc_10",
+      "chunk_id": "chunk-b2b48b6f60d5fbf971262045d0b55c30"
+    },
+    {
+      "reference_id": "1",
+      "content": "pytorch / rl\n\nPublic\n\nCode\n\nIssues\n\n201\n\nPull requests\n\n79\n\nDiscussions\n\nActions\n\nProjects\n\nReleases\n\nTags\n\nFind a release\n\nlast month\n\n vmoens\n\n  v0.11.1\n\n  b72830f\n\nCompare\n\nTorchRL v0.11.1\n\nLatest\n\nHighlights\n\nThis patch release includes several important bug ﬁxes and performance improvements:\n\nFixed  Composite.encode()  to correctly set the batch size of the output TensorDict\n\nFixed  StepCounter  to properly track nested truncated and done states in multi-agent\n\nenvironments\n\nFixed shared memory weight updater to work correctly with collectors using multiple\n\npolicies\n\nFixed  _repr_html_  dispatch in parallel environments that was causing doc CI failures\n\nAdded  scalar_output_mode  to loss modules for proper handling of\n\nreduction='none'\n\nFixed  torch.compile  conﬁguration for Dreamer\n\nPerformance: GPU Image Transforms for Dreamer (~5.5x faster sampling)\n\nPerformance: SliceSampler GPU acceleration for faster trajectory computation\n\nPerformance: Always enable prefetch for replay buﬀer\n\nBreaking Changes\n\nNo breaking changes in this release.",
+      "file_path": "s99_doc_10",
+      "chunk_id": "chunk-470090e85a59e80646d7722b11ba3b6a"
+    },
+    {
+      "reference_id": "1",
+      "content": "[Feature] Async collection within trainers ( 5f1eb2c )\n\nEnables asynchronous data collection during training\n\nImproves training throughput [Feature] PPO Trainer Updates ( 129f3d5 )\n\nUpdates to PPO trainer with new features\n\nTool Services for LLM Agents\n\nNew infrastructure for tool-augmented LLM agents. @vmoens\n\n[Feature] Tool services ( 9ca0e40 )\n\nNew  torchrl/services/  module for tool execution\n\nPython executor service for safe code execution\n\nMCP (Model Context Protocol) tool integration\n\nWeb search tool example\n\n609 lines of documentation in  docs/source/reference/services.rst\n\nComprehensive test coverage in  test/test_services.py\n\n[Feature] Transform Module - ModuleTransform and Ray Service Refactor\n\n( 7b85c71 )\n\nNew  ModuleTransform  for applying nn.Modules as transforms\n\nRefactored Ray service integration\n\nMoves  ray_service.py  to  torchrl/envs/transforms/\n\ntorch.compile Compatibility\n\nFixes to enable torch.compile with various TorchRL components.",
+      "file_path": "s99_doc_10",
+      "chunk_id": "chunk-af3c119c5cf4f71535cd73f9accded9f"
+    },
+    {
+      "reference_id": "2",
+      "content": "total_frames (int): A keyword-only argument representing the total\nnumber of frames returned by the collector\nduring its lifespan. If the ``total_frames`` is not divisible by\n``frames_per_batch``, an exception is raised. Endless collectors can be created by passing ``total_frames=-1``.\nDefaults to ``-1`` (endless collector). device (int, str or torch.device, optional): The generic device of the\ncollector. The ``device`` args fills any non-specified device: if\n``device`` is not ``None`` and any of ``storing_device``, ``policy_device`` or\n``env_device`` is not specified, its value will be set to ``device``.\nDefaults to ``None`` (No default device). storing_device (int, str or torch.device, optional): The device on which\nthe output :class:`~tensordict. TensorDict` will be stored. If ``device`` is passed and ``storing_device`` is ``None``, it will\ndefault to the value indicated by ``device``. For long trajectories, it may be necessary to store the data on a different\ndevice than the one where the policy and env are executed.\nDefaults to ``None`` (the output tensordict isn't on a specific device,\nleaf tensors sit on the device where they were created).",
+      "file_path": "s99_doc_5",
+      "chunk_id": "chunk-12bfc11874e8065972614049837fd134"
+    },
+    {
+      "reference_id": "5",
+      "content": "ValueError – If num_rollouts <= warmup_rollouts.\n\n>>> from torchrl.collectors import MultiSyncCollector\n>>> collector = MultiSyncCollector(\n...     create_env_fn=[make_env] * 4,\n...     policy=policy,\n...     frames_per_batch=1000,\n...     total_frames=100000,\n>>> collector.enable_profile(\n...     workers=[0],\n...     num_rollouts=5,\n...     warmup_rollouts=2,\n...     save_path=\"./traces/worker_{worker_idx}.json\",\n>>> # Worker 0 will be profiled for rollouts 2, 3, 4\n>>> for data in collector:\n...     train(data)\n>>> collector.shutdown()\n\nNOTE\n\nProfiling adds overhead, so only profile\n\nThe trace file can be viewed in Chrome’s trace viewer\n\nFor multi-process collectors, this must be\n\nspecific workers\n\n(chrome://tracing) or with PyTorch’s TensorBoard\n\ncalled BEFORE iteration starts as it needs to\n\nplugin\n\nconfigure workers\n\nget_model(model_id: str)\n\nGet model instance by ID (for weight sync schemes). Parameters:\n\nmodel_id – Model identifier (e.g., “policy”, “value_net”)\n\nReturns: The model instance\n\nRaises:\n\nValueError – If model_id is not recognized\n\nget_policy_model() [SOURCE]\n\nGet the policy model.",
+      "file_path": "s99_doc_1",
+      "chunk_id": "chunk-65b6aaa3994e344b2ce1ccee2e2110f6"
+    },
+    {
+      "reference_id": "8",
+      "content": "[10,]\n>>> data = TensorDict({\n...     \"observation\": torch.randn(*batch, n_obs),\n...     \"action\": spec.rand(batch),\n...     (\"next\", \"observation\"): torch.randn(*batch, n_obs),\n...     (\"next\", \"done\"): torch.zeros(*batch, 1, dtype=torch.bool),\n...     (\"next\", \"terminated\"): torch.zeros(*batch, 1, dtype=torch.bool),\n...     (\"next\", \"reward\"): torch.randn(*batch, 1)\n... }, batch)\n>>> loss(data) TensorDict(\n    fields={\n        loss: Tensor(shape=torch. Size([]), device=cpu, dtype=torch.float32, is_shared=False)},\n    batch_size=torch. Size([]),\n    device=None,\n    is_shared=False) This class is compatible with non-tensordict based modules too and can be used without recurring to any tensordict-related primitive.",
+      "file_path": "s99_doc_11",
+      "chunk_id": "chunk-b374d85a0649ff722aebb5e72f25a0f8"
+    },
+    {
+      "reference_id": "1",
+      "content": "Advanced conversation management system\n\nLLM collector (#2879) - Specialized data collection for language models\n\nvLLM wrapper (#2830) - High-performance vLLM integration\n\nTransformers policy (#2825) - Hugging Face transformers integration\n\nEnvironment Enhancements\n\nIsaacLab wrapper (#2937) - NVIDIA Isaac Lab environment support\n\nComplete PettingZooWrapper state support (#2953) - Full state management for\nmulti-agent environments\n\nConditionalPolicySwitch transform (#2711) - Dynamic policy switching based on\n\nconditions\n\nAsync environments (#2864) - Asynchronous environment execution\n\nVecNormV2 (#2867) - Improved vector normalization with batched environment\nsupport\n\nAlgorithm Improvements\n\nAsync GRPO (#2997) - Asynchronous Group Relative Policy Optimization\n\nExpert Iteration and SFT (#3017) - Expert iteration and supervised ﬁne-tuning\nalgorithms\n\nAsync SAC (#2946) - Asynchronous Soft Actor-Critic implementation\n\nMulti-node Ray support for GRPO (#3040) - Distributed GRPO training\n\nData Management\n\nRayReplayBuﬀer (#2835) - Distributed replay buﬀer using Ray\n\nRayReplayBuﬀer usage examples (#2949) - Comprehensive usage examples\n\nPolicy factory for collectors (#2841) - Flexible policy creation in collectors\n\nLocal and Remote WeightUpdaters (#2848) - Distributed weight synchronization\n\nPerformance Optimizations\n\nDeactivate vmap in objectives (#2957) - Improved performance by disabling\n\nvectorized operations\n\nHold a single copy of low/high in bounded specs (#2977) -",
+      "file_path": "s99_doc_10",
+      "chunk_id": "chunk-afee0d1808f958c6e024bf8341ea8584"
+    },
+    {
+      "reference_id": "2",
+      "content": "import annotations\nimport _pickle\nimport abc\nimport collections\nimport contextlib\nimport functools\nimport os\nimport queue\nimport sys\nimport time\nimport typing\nimport warnings\nfrom collections import defaultdict, OrderedDict\nfrom copy import deepcopy\nfrom multiprocessing import connection, queues\nfrom multiprocessing.managers import SyncManager\nfrom queue import Empty\nfrom textwrap import indent\nfrom typing import Any, Callable, Dict, Iterator, Optional, Sequence, Tuple, Union\nimport numpy as np\nimport torch\nimport torch.nn as nn\nfrom tensordict import (\nLazyStackedTensorDict,\nTensorDict,\nTensorDictBase,\nTensorDictParams,\n)\nfrom tensordict.base import NO_DEFAULT\nfrom tensordict.nn import CudaGraphModule, TensorDictModule\nfrom tensordict.utils import Buffer\nfrom torch import multiprocessing as mp\nfrom torch.nn import Parameter\nfrom torch.utils.data import IterableDataset\nfrom torchrl._utils import (\n_check_for_faulty_process,\n_ends_with,\n_make_ordinal_device,\n_ProcessNoWarn,\n_replace_last,\naccept_remote_rref_udf_invocation,\ncompile_with_warmup,\nlogger as torchrl_logger,\nprod,\nRL_WARNINGS,\nVERBOSE,\n)\nfrom torchrl.collectors.utils import split_trajectories\nfrom torchrl.data import ReplayBuffer\nfrom torchrl.data.tensor_specs import TensorSpec\nfrom torchrl.data.utils import CloudpickleWrapper, DEVICE_TYPING\nfrom torchrl.envs.common import _do_nothing, EnvBase\nfrom torchrl.envs.env_creator import EnvCreator\nfrom torchrl.envs.transforms import StepCounter, TransformedEnv\nfrom torchrl.envs.utils import (\n_aggregate_end_of_traj,\n_make_compatible_policy,\nExplorationType,\nRandomPolicy,\nset_exploration_type,\n)\ntry:\nfrom torch.compiler import cudagraph_mark_step_begin\nexcept ImportError:\ndef cudagraph_mark_step_begin():\n\"\"\"Placeholder for missing cudagraph_mark_step_begin method.\"",
+      "file_path": "s99_doc_5",
+      "chunk_id": "chunk-7800cf64de2196ce8db73f8b4a03152c"
+    },
+    {
+      "reference_id": "1",
+      "content": "@vmoens\n\nMajor collector refactor - The collector codebase has been completely restructured. The monolithic  collectors.py  is now split into focused modules ( _single.py ,\n\n_multi_base.py ,  _multi_sync.py ,  _multi_async.py ,  _runner.py ,  base.py ), with\n\ncleaner separation of concerns. (#3233) @vmoens\n\nLLM objectives: DAPO & CISPO - New DAPO (Direct Advantage Policy Optimization)\n\nand CISPO (Clipped Importance Sampling Policy Optimization) algorithms for LLM\ntraining. @vmoens\n\nTrainer infrastructure - New SAC Trainer, conﬁguration system for algorithms,\ntiming utilities, and async collection support within trainers. @vmoens\n\nTool services - New tool service infrastructure for LLM agents with Python executor,\n\nMCP tools, and web search capabilities. @vmoens\n\nDeprecated APIs removed - All deprecation warnings from v0.10 have been\n\npromoted to hard errors for v0.11. (#3369) @vmoens\n\nNew environment backends - Added Procgen environments support with a new\n\nProcgenEnv  wrapper. (#3331) @ParamThakkar123\n\nMulti-env execution - GymEnv, BraxEnv, and DMControlEnv now support a\nnum_envs / num_workers  parameter to run multiple environments in a single call via\n\nParallelEnv .",
+      "file_path": "s99_doc_10",
+      "chunk_id": "chunk-331cdbc0d0d749f560e9a8d831b7e65c"
+    },
+    {
+      "reference_id": "9",
+      "content": "Key Features\n\nFlexible storage\n\nAdvanced sampling\n\nComposable design: Mix\n\nType flexibility: Support\n\nEfficient transforms: Apply\n\nDistributed support: Ray-\n\nbackends: Memory,\n\nstrategies: Prioritized,\n\nand match storage,\n\nfor tensors, tensordicts,\n\npreprocessing during\n\nbased and remote replay\n\nmemmap, and compressed\n\nslice-based, and custom\n\nsamplers, and writers\n\nand arbitrary data types\n\nsampling\n\nbuffers\n\nstorage options\n\nsamplers\n\nQuick Example\n\nfrom torchrl.data import ReplayBuffer, LazyMemmapStorage, PrioritizedSampler\nfrom tensordict import TensorDict\n\n# Create a replay buffer with memmap storage and prioritized sampling\nbuffer = ReplayBuffer(\n    storage=LazyMemmapStorage(max_size=1000000),\n    sampler=PrioritizedSampler(max_capacity=1000000, alpha=0.7, beta=0.5),\n    batch_size=256,\n\n# Add data\ndata = TensorDict({\n    \"observation\": torch.randn(32, 4),\n    \"action\": torch.randn(32, 2),\n    \"reward\": torch.randn(32, 1),\n}, batch_size=[32])\nbuffer.extend(data)\n\n# Sample\nsample = buffer.sample()  # Returns batch_size=256\n\nDocumentation Sections\n\nReplay Buffers\n\nStorage Backends\n\nCore\n\nComposable\n\nCompressedListStorageCompressedListStorageCheckpointerFlatStorageCheckpointerH5StorageCheckpointerImmutableDatasetWriterLazyMemmapStorageLazyTensorStorageListStorageLazyStackSt\n\nReplay\n\nReplay\n\nBuffer\n\nBuffers\n\nClasses\n\n Previous\n\nNext\n\n© Copyright 2022, Meta.",
+      "file_path": "s99_doc_3",
+      "chunk_id": "chunk-b41d8533268c51ad903ee2b7cf65279a"
+    }
+  ],
+  "entities": [
+    {
+      "entity_name": "torchrl",
+      "entity_type": "organization",
+      "description": "torchrl is a organization. Context: Get started with Environments, TED and transforms\nGet started with TorchRL’s modules\nGetting started with model optimization\nGet started with data collection and storage\nGet started with logging\nGet started with your own first training loop\nReinforcement Learning (PPO) with TorchRL Tutorial\nPendulum: Writing your environment and transforms with TorchRL\nIntroduction to TorchRL\nMulti-Agent Reinforcement Learning (PPO) with TorchRL Tutorial\nTorchRL envs\nUsing pretrained models\nRecurrent DQN: Training recurrent policies\nUsing Replay Buffers\nExporting TorchRL modules\nCompetitive Multi-Agent Reinforcement Learning (DDPG) with TorchRL Tutorial\nTask-specific policy in multi-task environments\nTorchRL objectives: Coding a DDPG loss\nTorchRL trainer: A DQN example\nAPI Reference\nKnowledge Base\nDocs\n>\nModule code >\ntorchrl.collectors.collectors\nShortcuts\nSource code for torchrl.collectors.collectors\n# Copyright (c) Meta Platforms, Inc. and affiliates.",
+      "source_id": "chunk-79d9cf783011ad9fe630e246831ed2e7",
+      "file_path": "s99_doc_5",
+      "created_at": 1774596330
+    },
+    {
+      "entity_name": "using replay buffers\nexporting",
+      "entity_type": "product",
+      "description": "using replay buffers\nexporting is a product. Context: Get started with Environments, TED and transforms\nGet started with TorchRL’s modules\nGetting started with model optimization\nGet started with data collection and storage\nGet started with logging\nGet started with your own first training loop\nReinforcement Learning (PPO) with TorchRL Tutorial\nPendulum: Writing your environment and transforms with TorchRL\nIntroduction to TorchRL\nMulti-Agent Reinforcement Learning (PPO) with TorchRL Tutorial\nTorchRL envs\nUsing pretrained models\nRecurrent DQN: Training recurrent policies\nUsing Replay Buffers\nExporting TorchRL modules\nCompetitive Multi-Agent Reinforcement Learning (DDPG) with TorchRL Tutorial\nTask-specific policy in multi-task environments\nTorchRL objectives: Coding a DDPG loss\nTorchRL trainer: A DQN example\nAPI Reference\nKnowledge Base\nDocs\n>\nModule code >\ntorchrl.collectors.collectors\nShortcuts\nSource code for torchrl.collectors.collectors\n# Copyright (c) Meta Platforms, Inc. and affiliates.",
+      "source_id": "chunk-79d9cf783011ad9fe630e246831ed2e7",
+      "file_path": "s99_doc_5",
+      "created_at": 1774596329
+    },
+    {
+      "entity_name": "ted",
+      "entity_type": "person",
+      "description": "ted is a person. Context: Get started with Environments, TED and transforms\nGet started with TorchRL’s modules\nGetting started with model optimization\nGet started with data collection and storage\nGet started with logging\nGet started with your own first training loop\nReinforcement Learning (PPO) with TorchRL Tutorial\nPendulum: Writing your environment and transforms with TorchRL\nIntroduction to TorchRL\nMulti-Agent Reinforcement Learning (PPO) with TorchRL Tutorial\nTorchRL envs\nUsing pretrained models\nRecurrent DQN: Training recurrent policies\nUsing Replay Buffers\nExporting TorchRL modules\nCompetitive Multi-Agent Reinforcement Learning (DDPG) with TorchRL Tutorial\nTask-specific policy in multi-task environments\nTorchRL objectives: Coding a DDPG loss\nTorchRL trainer: A DQN example\nAPI Reference\nKnowledge Base\nDocs\n>\nModule code >\ntorchrl.collectors.collectors\nShortcuts\nSource code for torchrl.collectors.collectors\n# Copyright (c) Meta Platforms, Inc. and affiliates.",
+      "source_id": "chunk-79d9cf783011ad9fe630e246831ed2e7",
+      "file_path": "s99_doc_5",
+      "created_at": 1774596330
+    },
+    {
+      "entity_name": "ddpg",
+      "entity_type": "organization",
+      "description": "ddpg is a organization. Context: Get started with Environments, TED and transforms\nGet started with TorchRL’s modules\nGetting started with model optimization\nGet started with data collection and storage\nGet started with logging\nGet started with your own first training loop\nReinforcement Learning (PPO) with TorchRL Tutorial\nPendulum: Writing your environment and transforms with TorchRL\nIntroduction to TorchRL\nMulti-Agent Reinforcement Learning (PPO) with TorchRL Tutorial\nTorchRL envs\nUsing pretrained models\nRecurrent DQN: Training recurrent policies\nUsing Replay Buffers\nExporting TorchRL modules\nCompetitive Multi-Agent Reinforcement Learning (DDPG) with TorchRL Tutorial\nTask-specific policy in multi-task environments\nTorchRL objectives: Coding a DDPG loss\nTorchRL trainer: A DQN example\nAPI Reference\nKnowledge Base\nDocs\n>\nModule code >\ntorchrl.collectors.collectors\nShortcuts\nSource code for torchrl.collectors.collectors\n# Copyright (c) Meta Platforms, Inc. and affiliates.",
+      "source_id": "chunk-79d9cf783011ad9fe630e246831ed2e7",
+      "file_path": "s99_doc_5",
+      "created_at": 1774596329
+    },
+    {
+      "entity_name": "using replay buffers\n\nexporting",
+      "entity_type": "concept",
+      "description": "using replay buffers\n\nexporting is a concept. Context: Get started with logging\n\nGet started with your own first training loop\n\nTUTORIALS\n\nBasics\n\nReinforcement Learning (PPO) with TorchRL Tutorial\n\nPendulum: Writing your environment and transforms with TorchRL\n\nIntroduction to TorchRL\n\nIntermediate\n\nMulti-Agent Reinforcement Learning (PPO) with TorchRL Tutorial\n\nTorchRL envs\n\nUsing pretrained models\n\nRecurrent DQN: Training recurrent policies\n\nUsing Replay Buffers\n\nExporting TorchRL modules\n\nTorchRL LLM:",
+      "source_id": "chunk-4a65943335c543052694c5789b4a0e68",
+      "file_path": "s99_doc_13",
+      "created_at": 1774596329
+    },
+    {
+      "entity_name": "meta platforms, inc.",
+      "entity_type": "organization",
+      "description": "meta platforms, inc. is a organization. Context: Get started with Environments, TED and transforms\nGet started with TorchRL’s modules\nGetting started with model optimization\nGet started with data collection and storage\nGet started with logging\nGet started with your own first training loop\nReinforcement Learning (PPO) with TorchRL Tutorial\nPendulum: Writing your environment and transforms with TorchRL\nIntroduction to TorchRL\nMulti-Agent Reinforcement Learning (PPO) with TorchRL Tutorial\nTorchRL envs\nUsing pretrained models\nRecurrent DQN: Training recurrent policies\nUsing Replay Buffers\nExporting TorchRL modules\nCompetitive Multi-Agent Reinforcement Learning (DDPG) with TorchRL Tutorial\nTask-specific policy in multi-task environments\nTorchRL objectives: Coding a DDPG loss\nTorchRL trainer: A DQN example\nAPI Reference\nKnowledge Base\nDocs\n>\nModule code >\ntorchrl.collectors.collectors\nShortcuts\nSource code for torchrl.collectors.collectors\n# Copyright (c) Meta Platforms, Inc. and affiliates.",
+      "source_id": "chunk-79d9cf783011ad9fe630e246831ed2e7",
+      "file_path": "s99_doc_5",
+      "created_at": 1774596330
+    },
+    {
+      "entity_name": "pytorch",
+      "entity_type": "person",
+      "description": "pytorch is a person. Context: |\n| Access comprehensive | Get in-depth tutorials | Find development       |\n| developer            | for beginners and      | resources and get your |\n| documentation for    | advanced developers    | questions answered     |\n| PyTorch              | View Tutorials         | View Resources         |\nView Docs\nStay in touch for updates, event info, and the\nlatest news\n| First Name* | Last Name* | Email* |\n| -----------",
+      "source_id": "chunk-fbeb8881b17ab601e972dbecd1788d5f",
+      "file_path": "s9_doc_3",
+      "created_at": 1774596402
+    },
+    {
+      "entity_name": "tensordict",
+      "entity_type": "organization",
+      "description": "tensordict is a organization. Context: Use the sync parameter to choose between synchronous and asynchronous collection:\n\nfrom torchrl.collectors import MultiCollector\n\n# Synchronous collection: all workers complete before delivering batch\ncollector = MultiCollector(\n    create_env_fn=[make_env] * 4,  # 4 parallel workers\n    policy=my_policy,\n    frames_per_batch=200,\n    total_frames=10000,\n    sync=True,  # synchronized delivery\n\n# Asynchronous collection: first-come-first-serve delivery\ncollector = MultiCollector(\n    create_env_fn=[make_env] * 4,\n    policy=my_policy,\n    frames_per_batch=200,\n    total_frames=10000,\n    sync=False,  # async delivery (faster, but policy may lag)\n\nWhen to use sync vs async:\n\nsync=True: Use for on-policy algorithms (PPO, A2C) where data must match current\n\nsync=False: Use for off-policy algorithms (SAC, DQN) where slight policy lag is\n\npolicy\n\nacceptable\n\nKey Features\n\nFlexible execution: Choose\n\nDevice management: Control\n\nWeight synchronization: Keep\n\nReplay buffer integration:\n\nBatching strategies: Multiple\n\nbetween sync, async, and\n\nwhere environments and policies\n\ninference policies up-to-date with\n\nSeamless compatibility with\n\nways to organize collected data\n\ndistributed collection\n\nexecute\n\ntraining weights\n\nTorchRL’s replay buffers\n\nQuick Example\n\nfrom torchrl.collectors import Collector\nfrom torchrl.envs import GymEnv, ParallelEnv\n\n# Create a batched environment\ndef make_env():\n    return GymEnv(\"Pendulum-v1\")\n\nenv = ParallelEnv(4, make_env)\n\n# Create collector\ncollector = Collector(\n    env,\n    policy=my_policy,\n    frames_per_batch=200,\n    total_frames=10000,\n\n# Collect data\nfor data in collector:\n    # data is a TensorDict with shape [4, 50] (4 envs, 50 steps each)\n    # Use data for training...\n\n    # Update policy weights periodically\n    if should_update:\n        collector.update_policy_weights_()\n\ncollector.shutdown()\n\nLegacy names\n\nThe following names are kept for backward compatibility:",
+      "source_id": "chunk-21b1e86e509c35abb70f64a8e04dc2d3",
+      "file_path": "s99_doc_9",
+      "created_at": 1774596330
+    },
+    {
+      "entity_name": "model_id",
+      "entity_type": "person",
+      "description": "model_id is a person. Context: The model instance\n\nRaises:\n\nValueError – If model_id is not recognized\n\nget_policy_model(); An\n\nthe workers to update.\n\nidentifier to update\n\nmapping model_id to weights\n\nTensorDict or dict\n\nnn.Module or\n\nRelevant when the collector\n\n(default: \"policy\").",
+      "source_id": "chunk-65b6aaa3994e344b2ce1ccee2e2110f6",
+      "file_path": "s99_doc_1",
+      "created_at": 1774596329
+    },
+    {
+      "entity_name": "api",
+      "entity_type": "organization",
+      "description": "api is a organization. Context: We\n\nare working on an API to control the result layout and recognize it is an important feature to plan a\n\nmore optimal path of execution for any given model.",
+      "source_id": "chunk-bd5c9192e8032b4c383c54c029786905",
+      "file_path": "s9_doc_12",
+      "created_at": 1774596402
+    },
+    {
+      "entity_name": "tutorial\npendulum",
+      "entity_type": "concept",
+      "description": "tutorial\npendulum is a concept. Context: Get started with Environments, TED and transforms\nGet started with TorchRL’s modules\nGetting started with model optimization\nGet started with data collection and storage\nGet started with logging\nGet started with your own first training loop\nReinforcement Learning (PPO) with TorchRL Tutorial\nPendulum: Writing your environment and transforms with TorchRL\nIntroduction to TorchRL\nMulti-Agent Reinforcement Learning (PPO) with TorchRL Tutorial\nTorchRL envs\nUsing pretrained models\nRecurrent DQN: Training recurrent policies\nUsing Replay Buffers\nExporting TorchRL modules\nCompetitive Multi-Agent Reinforcement Learning (DDPG) with TorchRL Tutorial\nTask-specific policy in multi-task environments\nTorchRL objectives: Coding a DDPG loss\nTorchRL trainer: A DQN example\nAPI Reference\nKnowledge Base\nDocs\n>\nModule code >\ntorchrl.collectors.collectors\nShortcuts\nSource code for torchrl.collectors.collectors\n# Copyright (c) Meta Platforms, Inc. and affiliates.",
+      "source_id": "chunk-79d9cf783011ad9fe630e246831ed2e7",
+      "file_path": "s99_doc_5",
+      "created_at": 1774596330
+    },
+    {
+      "entity_name": "replay buffer",
+      "entity_type": "product",
+      "description": "replay buffer is a product. Context: Check the dedicated Replay Buffer tutorial to know more about the options you have when building a buffer, or the API reference which covers all the features in details.",
+      "source_id": "chunk-4d043d6fd0b0362ad3d00667742da9c0",
+      "file_path": "s99_doc_14",
+      "created_at": 1774596329
+    },
+    {
+      "entity_name": "data management",
+      "entity_type": "organization",
+      "description": "data management is a organization. Context: Advanced conversation management system\n\nLLM collector (#2879) - Specialized data collection for language models\n\nvLLM wrapper (#2830) - High-performance vLLM integration\n\nTransformers policy (#2825) - Hugging Face transformers integration\n\nEnvironment Enhancements\n\nIsaacLab wrapper (#2937) - NVIDIA Isaac Lab environment support\n\nComplete PettingZooWrapper state support (#2953) - Full state management for\nmulti-agent environments\n\nConditionalPolicySwitch transform (#2711) - Dynamic policy switching based on\n\nconditions\n\nAsync environments (#2864) - Asynchronous environment execution\n\nVecNormV2 (#2867) - Improved vector normalization with batched environment\nsupport\n\nAlgorithm Improvements\n\nAsync GRPO (#2997) - Asynchronous Group Relative Policy Optimization\n\nExpert Iteration and SFT (#3017) - Expert iteration and supervised ﬁne-tuning\nalgorithms\n\nAsync SAC (#2946) - Asynchronous Soft Actor-Critic implementation\n\nMulti-node Ray support for GRPO (#3040) - Distributed GRPO training\n\nData Management\n\nRayReplayBuﬀer (#2835) - Distributed replay buﬀer using Ray\n\nRayReplayBuﬀer usage examples (#2949) - Comprehensive usage examples\n\nPolicy factory for collectors (#2841) - Flexible policy creation in collectors\n\nLocal and Remote WeightUpdaters (#2848) - Distributed weight synchronization\n\nPerformance Optimizations\n\nDeactivate vmap in objectives (#2957) - Improved performance by disabling\n\nvectorized operations\n\nHold a single copy of low/high in bounded specs (#2977) -",
+      "source_id": "chunk-afee0d1808f958c6e024bf8341ea8584",
+      "file_path": "s99_doc_10",
+      "created_at": 1774596330
+    },
+    {
+      "entity_name": "c++",
+      "entity_type": "organization",
+      "description": "c++ is a organization. Context: Added missing docstrings for History functionality (#3083) @vmoens\n\nMulti-agent PPO: Fixed tutorial issues (#2940) @matteobettini\n\nWeightUpdater: Updated documentation after renaming (#3007) @albertbou92\n\nInfrastructure and CI\n\nPre-commit Updates: Updated formatting and linting tools (#3108) @vmoens\n\nBenchmark CI: Fixed benchmark runs and added missing dependencies (#3092,\n#3163) @vmoens\n\nWindows CI: Fixed Windows continuous integration (#3028) @vmoens\n\nOld Dependencies: Fixed CI for older dependency versions (#3165) @vmoens\n\nC++ Linting: Fixed C++ code linting issues (#3129) @vmoens\n\nBuild System: Improved pyproject.toml usage and versioning (#3089, #3166)\n@vmoens\n\n🏆 Contributors\n\nSpecial thanks to all contributors who made this release possible:\n\n@albertbou92 (; For PyTorch prior to 2.7.0, backward compatibility is guaranteed to some extend\n\n(most classes should work, unless new features are used) but C++ binaries (for\n\nprioritized replay buﬀers) will not work.; For PyTorch >= 2.7.0, C++ binaries should work across versions.",
+      "source_id": "chunk-d23b025e2deccbf04c9b4be34885f6b8",
+      "file_path": "s99_doc_10",
+      "created_at": 1774596329
+    },
+    {
+      "entity_name": "collector",
+      "entity_type": "person",
+      "description": "collector is a person. Context: Use the sync parameter to choose between synchronous and asynchronous collection:\n\nfrom torchrl.collectors import MultiCollector\n\n# Synchronous collection: all workers complete before delivering batch\ncollector = MultiCollector(\n    create_env_fn=[make_env] * 4,  # 4 parallel workers\n    policy=my_policy,\n    frames_per_batch=200,\n    total_frames=10000,\n    sync=True,  # synchronized delivery\n\n# Asynchronous collection: first-come-first-serve delivery\ncollector = MultiCollector(\n    create_env_fn=[make_env] * 4,\n    policy=my_policy,\n    frames_per_batch=200,\n    total_frames=10000,\n    sync=False,  # async delivery (faster, but policy may lag)\n\nWhen to use sync vs async:\n\nsync=True: Use for on-policy algorithms (PPO, A2C) where data must match current\n\nsync=False: Use for off-policy algorithms (SAC, DQN) where slight policy lag is\n\npolicy\n\nacceptable\n\nKey Features\n\nFlexible execution: Choose\n\nDevice management: Control\n\nWeight synchronization: Keep\n\nReplay buffer integration:\n\nBatching strategies: Multiple\n\nbetween sync, async, and\n\nwhere environments and policies\n\ninference policies up-to-date with\n\nSeamless compatibility with\n\nways to organize collected data\n\ndistributed collection\n\nexecute\n\ntraining weights\n\nTorchRL’s replay buffers\n\nQuick Example\n\nfrom torchrl.collectors import Collector\nfrom torchrl.envs import GymEnv, ParallelEnv\n\n# Create a batched environment\ndef make_env():\n    return GymEnv(\"Pendulum-v1\")\n\nenv = ParallelEnv(4, make_env)\n\n# Create collector\ncollector = Collector(\n    env,\n    policy=my_policy,\n    frames_per_batch=200,\n    total_frames=10000,\n\n# Collect data\nfor data in collector:\n    # data is a TensorDict with shape [4, 50] (4 envs, 50 steps each)\n    # Use data for training...\n\n    # Update policy weights periodically\n    if should_update:\n        collector.update_policy_weights_()\n\ncollector.shutdown()\n\nLegacy names\n\nThe following names are kept for backward compatibility:",
+      "source_id": "chunk-21b1e86e509c35abb70f64a8e04dc2d3",
+      "file_path": "s99_doc_9",
+      "created_at": 1774596330
+    },
+    {
+      "entity_name": "minari",
+      "entity_type": "person",
+      "description": "minari is a person. Context: @Ibinarriaga\n\nMulti-node Ray Support: Enhanced distributed training for GRPO (#3040)\n@albertbou92\n\nEnvironment Support\n\nNPU Support: Added NPU device support for SyncDataCollector (#3155) @lowdy1\n\nIsaacLab Wrapper: Integration with IsaacLab simulation framework (#2937)\n@vmoens\n\nComplete PettingZoo State Support: Enhanced multi-agent environment support\n(#2953) @JGuzzi\n\nMinari Integration: Support for loading datasets from local Minari cache (#3068)\n@Ibinarriaga\n\nStorage and Replay Buﬀers\n\nCompressed Storage GPU: GPU acceleration for compressed replay buﬀers (#3062)\n@aorenstein68\n\nPacking: New data packing functionality for eﬃcient storage (#3060) @vmoens\n\nRay Replay Buﬀer: Enhanced distributed replay buﬀer support (#2949) @vmoens\n\n🔧 Improvements and Enhancements\n\nPerformance Optimizations\n\nBounded Specs Memory:; Minari integration\n\n@aorenstein68 (Adrian Orenstein) - Compressed storage GPU support\n\n@louisfaury (Louis Faury) -",
+      "source_id": "chunk-55e4a1a81c5667dc3da5c8a672080dd7",
+      "file_path": "s99_doc_10",
+      "created_at": 1774596329
+    },
+    {
+      "entity_name": "specialized",
+      "entity_type": "organization",
+      "description": "specialized is a organization. Context: Seamless integration with Hugging\n\nFace models and vLLM inference engines\n\nConversation Management  torchrl.data.llm.history : Advanced  History  class\n\nfor multi-turn dialogue with automatic chat template detection\n\nTool Integration  torchrl.envs.llm.transforms : Built-in support for Python code\n\nexecution, function calling, and custom tool transforms\n\nSpecialized Objectives  torchrl.objectives.llm :; Advanced conversation management system\n\nLLM collector (#2879) - Specialized data collection for language models\n\nvLLM wrapper (#2830) - High-performance vLLM integration\n\nTransformers policy (#2825) - Hugging Face transformers integration\n\nEnvironment Enhancements\n\nIsaacLab wrapper (#2937) - NVIDIA Isaac Lab environment support\n\nComplete PettingZooWrapper state support (#2953) - Full state management for\nmulti-agent environments\n\nConditionalPolicySwitch transform (#2711) - Dynamic policy switching based on\n\nconditions\n\nAsync environments (#2864) - Asynchronous environment execution\n\nVecNormV2 (#2867) - Improved vector normalization with batched environment\nsupport\n\nAlgorithm Improvements\n\nAsync GRPO (#2997) - Asynchronous Group Relative Policy Optimization\n\nExpert Iteration and SFT (#3017) - Expert iteration and supervised ﬁne-tuning\nalgorithms\n\nAsync SAC (#2946) - Asynchronous Soft Actor-Critic implementation\n\nMulti-node Ray support for GRPO (#3040) - Distributed GRPO training\n\nData Management\n\nRayReplayBuﬀer (#2835) - Distributed replay buﬀer using Ray\n\nRayReplayBuﬀer usage examples (#2949) - Comprehensive usage examples\n\nPolicy factory for collectors (#2841) - Flexible policy creation in collectors\n\nLocal and Remote WeightUpdaters (#2848) - Distributed weight synchronization\n\nPerformance Optimizations\n\nDeactivate vmap in objectives (#2957) - Improved performance by disabling\n\nvectorized operations\n\nHold a single copy of low/high in bounded specs (#2977) -",
+      "source_id": "chunk-6ecdfcd0681c5505174be0fe4f572dd4",
+      "file_path": "s99_doc_10",
+      "created_at": 1774596330
+    },
+    {
+      "entity_name": "llm",
+      "entity_type": "organization",
+      "description": "llm is a organization. Context: (#3233) @vmoens\n\nLLM objectives: DAPO & CISPO - New DAPO (Direct Advantage Policy Optimization)\n\nand CISPO (Clipped Importance Sampling Policy Optimization) algorithms for LLM\ntraining.; (#3233) @vmoens\n\nLLM objectives: DAPO & CISPO - New DAPO (Direct Advantage Policy Optimization)\n\nand CISPO (Clipped Importance Sampling Policy Optimization) algorithms for LLM\ntraining.; @vmoens\n\nTool services - New tool service infrastructure for LLM agents with Python executor,\n\nMCP tools, and web search capabilities.",
+      "source_id": "chunk-331cdbc0d0d749f560e9a8d831b7e65c",
+      "file_path": "s99_doc_10",
+      "created_at": 1774596329
+    },
+    {
+      "entity_name": "moduletransform",
+      "entity_type": "organization",
+      "description": "moduletransform is a organization. Context: @vmoens\n\n[Feature] Tool services ( 9ca0e40 )\n\nNew  torchrl/services/  module for tool execution\n\nPython executor service for safe code execution\n\nMCP (Model Context Protocol) tool integration\n\nWeb search tool example\n\n609 lines of documentation in  docs/source/reference/services.rst\n\nComprehensive test coverage in  test/test_services.py\n\n[Feature] Transform Module - ModuleTransform and Ray Service Refactor\n\n( 7b85c71 )\n\nNew  ModuleTransform  for applying nn.Modules as transforms\n\nRefactored Ray service integration\n\nMoves  ray_service.py  to  torchrl/envs/transforms/\n\ntorch.compile Compatibility\n\nFixes to enable torch.compile with various TorchRL components.",
+      "source_id": "chunk-af3c119c5cf4f71535cd73f9accded9f",
+      "file_path": "s99_doc_10",
+      "created_at": 1774596329
+    },
+    {
+      "entity_name": "conﬁgs",
+      "entity_type": "organization",
+      "description": "conﬁgs is a organization. Context: @vmoens\n\n[Trainers] SAC Trainer and algorithms ( 02d4bfd )\n\nNew SAC Trainer implementation with 786 lines of code\n\nComplete sota-implementation in  sota-implementations/sac_trainer/\n\nTrainer conﬁguration via YAML ﬁles\n\n[Feature] Trainer Algorithms - Conﬁguration System ( 6bc201a )\n\nNew conﬁguration system in  torchrl/trainers/algorithms/configs/\n\nConﬁgs for collectors, data, modules, objectives, transforms, weight sync\nschemes\n\nEnables hydra-style conﬁguration composition",
+      "source_id": "chunk-b2b48b6f60d5fbf971262045d0b55c30",
+      "file_path": "s99_doc_10",
+      "created_at": 1774596329
+    },
+    {
+      "entity_name": "randompolicy",
+      "entity_type": "product",
+      "description": "randompolicy is a product. Context: Example\n\n>>> from torchrl.modules import RandomPolicy            >>>             >>> import time\n>>> from functools import partial\n>>> import tqdm\n>>> from torchrl.collectors import Collector\n>>> from torchrl.data import LazyTensorStorage, ReplayBuffer\n>>> from torchrl.envs import GymEnv, set_gym_backend\n>>> import ale_py\n>>> # Set the gym backend to gymnasium\n>>> set_gym_backend(\"gymnasium\").set()\n>>> if __name__",
+      "source_id": "chunk-dbe55d5032b00c06d132f9d964cfb3b8",
+      "file_path": "s99_doc_1",
+      "created_at": 1774596329
+    },
+    {
+      "entity_name": "gymenv(\"ale",
+      "entity_type": "person",
+      "description": "gymenv(\"ale is a person. Context: == \"__main__\":\n...     # Create a random policy for the Pong environment\n...     env = GymEnv(\"ALE/Pong-v5\")\n...     policy = RandomPolicy(env.action_spec)\n...     # Initialize a shared replay buffer\n...",
+      "source_id": "chunk-dbe55d5032b00c06d132f9d964cfb3b8",
+      "file_path": "s99_doc_1",
+      "created_at": 1774596329
+    },
+    {
+      "entity_name": "multi-agent reinforcement learning",
+      "entity_type": "organization",
+      "description": "multi-agent reinforcement learning is a organization. Context: Get started with Environments, TED and transforms\nGet started with TorchRL’s modules\nGetting started with model optimization\nGet started with data collection and storage\nGet started with logging\nGet started with your own first training loop\nReinforcement Learning (PPO) with TorchRL Tutorial\nPendulum: Writing your environment and transforms with TorchRL\nIntroduction to TorchRL\nMulti-Agent Reinforcement Learning (PPO) with TorchRL Tutorial\nTorchRL envs\nUsing pretrained models\nRecurrent DQN: Training recurrent policies\nUsing Replay Buffers\nExporting TorchRL modules\nCompetitive Multi-Agent Reinforcement Learning (DDPG) with TorchRL Tutorial\nTask-specific policy in multi-task environments\nTorchRL objectives: Coding a DDPG loss\nTorchRL trainer: A DQN example\nAPI Reference\nKnowledge Base\nDocs\n>\nModule code >\ntorchrl.collectors.collectors\nShortcuts\nSource code for torchrl.collectors.collectors\n# Copyright (c) Meta Platforms, Inc. and affiliates.",
+      "source_id": "chunk-79d9cf783011ad9fe630e246831ed2e7",
+      "file_path": "s99_doc_5",
+      "created_at": 1774596329
+    }
+  ],
+  "relationships": [
+    {
+      "src_id": "api",
+      "tgt_id": "tensordict",
+      "description": "api and tensordict are related. Source: for i in range(3)\n\nDecomposing the output dictionary in three similarly structured dictionaries afte",
+      "keywords": "co-occurrence,tensordict,api",
+      "weight": 1.0,
+      "source_id": "chunk-394bb3fc344253b68c8aee97310a7a17",
+      "file_path": "s99_doc_8",
+      "created_at": 1774596330
+    },
+    {
+      "src_id": "using replay buffers\nexporting",
+      "tgt_id": "ddpg",
+      "description": "using replay buffers\nexporting and ddpg are related. Source: Get started with Environments, TED and transforms\nGet started with TorchRL’s modules\nGetting started",
+      "keywords": "using replay buffers\nexporting,ddpg,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-79d9cf783011ad9fe630e246831ed2e7",
+      "file_path": "s99_doc_5",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "api",
+      "tgt_id": "torchrl",
+      "description": "api and torchrl are related. Source: GRPO (Group Relative Policy\n\nOptimization) and SFT loss functions optimized for language models\n\nHig",
+      "keywords": "co-occurrence,api,torchrl",
+      "weight": 1.5,
+      "source_id": "chunk-6ecdfcd0681c5505174be0fe4f572dd4",
+      "file_path": "s99_doc_10",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "using replay buffers\n\nexporting",
+      "tgt_id": "ddpg",
+      "description": "using replay buffers\n\nexporting and ddpg are related. Source: Get started with logging\n\nGet started with your own first training loop\n\nTUTORIALS\n\nBasics\n\nReinforc",
+      "keywords": "using replay buffers\n\nexporting,ddpg,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-4a65943335c543052694c5789b4a0e68",
+      "file_path": "s99_doc_13",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "api",
+      "tgt_id": "specialized",
+      "description": "specialized and api are related. Source: This new framework provides everything you need for RLHF, supervised\nﬁne-tuning, and tool-augmented",
+      "keywords": "co-occurrence,specialized,api",
+      "weight": 1.0,
+      "source_id": "chunk-6ecdfcd0681c5505174be0fe4f572dd4",
+      "file_path": "s99_doc_10",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "pytorch",
+      "tgt_id": "model_id",
+      "description": "pytorch and model_id are related. Source: ValueError – If num_rollouts <= warmup_rollouts.\n\n>>> from torchrl.collectors import MultiSyncCollec",
+      "keywords": "pytorch,model_id,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-65b6aaa3994e344b2ce1ccee2e2110f6",
+      "file_path": "s99_doc_1",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "collector",
+      "tgt_id": "cuda",
+      "description": "cuda and collector are related. Source: Updates Dreamer objectives to use torch.compile-compatible helpers\n\nImproves performance when using",
+      "keywords": "cuda,co-occurrence,collector",
+      "weight": 1.0,
+      "source_id": "chunk-f6b1518a146fd537b2df87eed7a51416",
+      "file_path": "s99_doc_10",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "api",
+      "tgt_id": "replay buffer",
+      "description": "api and replay buffer are related. Source: TorchRL also offers distributed collectors if you have multiple nodes to use for inference. Check th",
+      "keywords": "replay buffer,co-occurrence,api",
+      "weight": 1.5,
+      "source_id": "chunk-4d043d6fd0b0362ad3d00667742da9c0",
+      "file_path": "s99_doc_14",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "gpu",
+      "tgt_id": "tensordict",
+      "description": "tensordict and gpu are related. Source: The contents of the TensorDict can now be manipulated collectively. For example, to place all of the",
+      "keywords": "tensordict,gpu,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-f1988e0e5caa3b5c530e9e846601d5f8",
+      "file_path": "s99_doc_8",
+      "created_at": 1774596330
+    },
+    {
+      "src_id": "c++",
+      "tgt_id": "minari",
+      "description": "c++ and minari are related. Source: Added missing docstrings for History functionality (#3083) @vmoens\n\nMulti-agent PPO: Fixed tutorial",
+      "keywords": "c++,minari,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-d23b025e2deccbf04c9b4be34885f6b8",
+      "file_path": "s99_doc_10",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "collector",
+      "tgt_id": "gpu",
+      "description": "gpu and collector are related. Source: Updates Dreamer objectives to use torch.compile-compatible helpers\n\nImproves performance when using",
+      "keywords": "gpu,co-occurrence,collector",
+      "weight": 1.0,
+      "source_id": "chunk-f6b1518a146fd537b2df87eed7a51416",
+      "file_path": "s99_doc_10",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "llm",
+      "tgt_id": "moduletransform",
+      "description": "llm and moduletransform are related. Source: [Feature] PPO Trainer Updates ( 129f3d5 )\n\nUpdates to PPO trainer with new features\n\nTool Services f",
+      "keywords": "llm,moduletransform,co-occurrence",
+      "weight": 1.0,
+      "source_id": "chunk-af3c119c5cf4f71535cd73f9accded9f",
+      "file_path": "s99_doc_10",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "gpu",
+      "tgt_id": "specialized",
+      "description": "gpu and specialized are related. Source: An NPU chip achieves high parallelism while sipping power\ncompared to a GPU on the same inference ta",
+      "keywords": "gpu,co-occurrence,specialized",
+      "weight": 1.0,
+      "source_id": "chunk-87090d11f568bc923820c4f2e27eb809",
+      "file_path": "g201_doc_10",
+      "created_at": 1774593488
+    },
+    {
+      "src_id": "llm",
+      "tgt_id": "conﬁgs",
+      "description": "llm and conﬁgs are related. Source: @vmoens\n\n[Feature] DAPO ( 9d5c276 )\n\nImplements Direct Advantage Policy Optimization for LLM trainin",
+      "keywords": "llm,conﬁgs,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-b2b48b6f60d5fbf971262045d0b55c30",
+      "file_path": "s99_doc_10",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "python",
+      "tgt_id": "torchrl",
+      "description": "python and torchrl are related. Source: This new framework provides everything you need for RLHF, supervised\nﬁne-tuning, and tool-augmented",
+      "keywords": "python,co-occurrence,torchrl",
+      "weight": 1.0,
+      "source_id": "chunk-6ecdfcd0681c5505174be0fe4f572dd4",
+      "file_path": "s99_doc_10",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "c++",
+      "tgt_id": "llm",
+      "description": "c++ and llm are related. Source: Added missing docstrings for History functionality (#3083) @vmoens\n\nMulti-agent PPO: Fixed tutorial",
+      "keywords": "c++,llm,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-d23b025e2deccbf04c9b4be34885f6b8",
+      "file_path": "s99_doc_10",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "python",
+      "tgt_id": "specialized",
+      "description": "python and specialized are related. Source: This new framework provides everything you need for RLHF, supervised\nﬁne-tuning, and tool-augmented",
+      "keywords": "python,co-occurrence,specialized",
+      "weight": 1.0,
+      "source_id": "chunk-6ecdfcd0681c5505174be0fe4f572dd4",
+      "file_path": "s99_doc_10",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "randompolicy",
+      "tgt_id": "gymenv(\"ale",
+      "description": "randompolicy and gymenv(\"ale are related. Source: Raises:\n\nRuntimeError – If no replay buffer is defined during the collector’s initialization.\n\n Exam",
+      "keywords": "gymenv(\"ale,co-occurrence,randompolicy",
+      "weight": 1.0,
+      "source_id": "chunk-dbe55d5032b00c06d132f9d964cfb3b8",
+      "file_path": "s99_doc_1",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "1",
+      "tgt_id": "tensordict",
+      "description": "tensordict and 1 are related. Source: If not provided, defaults to the\n\nmodule.\n\ndimension marked with the \"time\" name if\n\nany, and to the",
+      "keywords": "co-occurrence,tensordict,1",
+      "weight": 2.0,
+      "source_id": "chunk-d37aab400b0eb9fba0210bf2e493ada6",
+      "file_path": "s99_doc_2",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "multi-agent reinforcement learning",
+      "tgt_id": "using replay buffers\nexporting",
+      "description": "multi-agent reinforcement learning and using replay buffers\nexporting are related. Source: Get started with Environments, TED and transforms\nGet started with TorchRL’s modules\nGetting started",
+      "keywords": "multi-agent reinforcement learning,using replay buffers\nexporting,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-79d9cf783011ad9fe630e246831ed2e7",
+      "file_path": "s99_doc_5",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "cpu",
+      "tgt_id": "meta platforms, inc.",
+      "description": "cpu and meta platforms, inc. are related. Source: Licensee’s use of linmath.h header for CPU functions for GL vector/matrix operations from lunarG is",
+      "keywords": "cpu,meta platforms, inc.,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-3cf0e0c27aa784e77a9af943a389b180",
+      "file_path": "s392_doc_16",
+      "created_at": 1774595009
+    },
+    {
+      "src_id": "3",
+      "tgt_id": "tensordict",
+      "description": "tensordict and 3 are related. Source: The TensorDictModule is also compatible with vmap() and other torch.func capabilities.\n\n Jacobian an",
+      "keywords": "3,co-occurrence,tensordict",
+      "weight": 2.5,
+      "source_id": "chunk-2414ee09de42ce9d3b318332e8cefae3",
+      "file_path": "s99_doc_8",
+      "created_at": 1774596330
+    },
+    {
+      "src_id": "4",
+      "tgt_id": "tensordict",
+      "description": "tensordict and 4 are related. Source: import torch\n>>> td = TensorDict(\n...      a=torch.randn(2, 3),\n...     config=UnbatchedTensor(torch",
+      "keywords": "4,tensordict,co-occurrence",
+      "weight": 4.5,
+      "source_id": "chunk-28937cffec338fddaa6b3a10bdd14077",
+      "file_path": "s99_doc_8",
+      "created_at": 1774596330
+    },
+    {
+      "src_id": "tensor",
+      "tgt_id": "tensordict",
+      "description": "tensor and tensordict are related. Source: Tensor and can be used as such.\n\n Shape operations pass through: when placed in a TensorDict, operat",
+      "keywords": "tensordict,co-occurrence,tensor",
+      "weight": 1.5,
+      "source_id": "chunk-42685d5b87c8a87f12ca02089dbe4850",
+      "file_path": "s99_doc_8",
+      "created_at": 1774596330
+    },
+    {
+      "src_id": "meta",
+      "tgt_id": "tensordict",
+      "description": "tensordict and meta are related. Source: If your tensors have no feature dimensions, either set  batch_size=[]  on the  TensorDict  so that a",
+      "keywords": "tensordict,meta,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-1b09aed476ad8d8c1162ea19269c7bd9",
+      "file_path": "s99_doc_8",
+      "created_at": 1774596330
+    },
+    {
+      "src_id": "sphinx",
+      "tgt_id": "tensordict",
+      "description": "tensordict and sphinx are related. Source: If your tensors have no feature dimensions, either set  batch_size=[]  on the  TensorDict  so that a",
+      "keywords": "tensordict,sphinx,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-1b09aed476ad8d8c1162ea19269c7bd9",
+      "file_path": "s99_doc_8",
+      "created_at": 1774596330
+    },
+    {
+      "src_id": "last month",
+      "tgt_id": "tensordict",
+      "description": "last month and tensordict are related. Source: pytorch / rl\n\nPublic\n\nCode\n\nIssues\n\n201\n\nPull requests\n\n79\n\nDiscussions\n\nActions\n\nProjects\n\nReleases",
+      "keywords": "last month,tensordict,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-470090e85a59e80646d7722b11ba3b6a",
+      "file_path": "s99_doc_10",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "-1",
+      "tgt_id": "tensordict",
+      "description": "tensordict and -1 are related. Source: episode[700:] = 4\n>>> data = TensorDict(\n...         \"episode\": episode,\n...         \"obs\": torch.ra",
+      "keywords": "tensordict,-1,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-c8093f768d95a8aa0cf442c469e84649",
+      "file_path": "s99_doc_6",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "ssl",
+      "tgt_id": "tensordict",
+      "description": "tensordict and ssl are related. Source: On this page we will motivate TensorDict and give some examples of what it can do.\n\n Motivation\n\nTen",
+      "keywords": "tensordict,ssl,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-15b9361d72cd6ef9948dea0168ba15bf",
+      "file_path": "s99_doc_8",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "abc",
+      "tgt_id": "tensordict",
+      "description": "abc and tensordict are related. Source: import annotations\nimport _pickle\nimport abc\nimport collections\nimport contextlib\nimport functools\ni",
+      "keywords": "abc,tensordict,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-7800cf64de2196ce8db73f8b4a03152c",
+      "file_path": "s99_doc_5",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "20",
+      "tgt_id": "tensordict",
+      "description": "tensordict and 20 are related. Source: episode[700:] = 4\n>>> data = TensorDict(\n...         \"episode\": episode,\n...         \"obs\": torch.ra",
+      "keywords": "tensordict,20,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-c8093f768d95a8aa0cf442c469e84649",
+      "file_path": "s99_doc_6",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "10",
+      "tgt_id": "tensordict",
+      "description": "tensordict and 10 are related. Source: If not provided, defaults to the\n\nmodule.\n\ndimension marked with the \"time\" name if\n\nany, and to the",
+      "keywords": "10,co-occurrence,tensordict",
+      "weight": 2.0,
+      "source_id": "chunk-d37aab400b0eb9fba0210bf2e493ada6",
+      "file_path": "s99_doc_2",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "ppo",
+      "tgt_id": "tensordict",
+      "description": "ppo and tensordict are related. Source: Use the sync parameter to choose between synchronous and asynchronous collection:\n\nfrom torchrl.coll",
+      "keywords": "ppo,tensordict,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-21b1e86e509c35abb70f64a8e04dc2d3",
+      "file_path": "s99_doc_9",
+      "created_at": 1774596330
+    },
+    {
+      "src_id": "tensordict",
+      "tgt_id": "tuple",
+      "description": "tuple and tensordict are related. Source: import annotations\nimport _pickle\nimport abc\nimport collections\nimport contextlib\nimport functools\ni",
+      "keywords": "tuple,tensordict,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-7800cf64de2196ce8db73f8b4a03152c",
+      "file_path": "s99_doc_5",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "nightly",
+      "tgt_id": "torchrl",
+      "description": "nightly and torchrl are related. Source: Nightly releases can be installed via\n\n$ pip install tensordict-nightly\n$ pip install torchrl-nightl",
+      "keywords": "nightly,torchrl,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-02cb92c5b4565995b910b4c40379f175",
+      "file_path": "s99_doc_13",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "rl",
+      "tgt_id": "tensordict",
+      "description": "tensordict and rl are related. Source: On this page we will motivate TensorDict and give some examples of what it can do.\n\n Motivation\n\nTen",
+      "keywords": "tensordict,rl,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-15b9361d72cd6ef9948dea0168ba15bf",
+      "file_path": "s99_doc_8",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "boolean",
+      "tgt_id": "tensordict",
+      "description": "boolean and tensordict are related. Source: Transform` or a :class:`~torchrl.data.postprocs. MultiStep`\ninstance.\nDefaults to ``None``.\n split_t",
+      "keywords": "boolean,co-occurrence,tensordict",
+      "weight": 4.5,
+      "source_id": "chunk-f6fa2b2fc99b8111ced6c41ce980c268",
+      "file_path": "s99_doc_5",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "nightly",
+      "tgt_id": "ted",
+      "description": "nightly and ted are related. Source: Nightly releases can be installed via\n\n$ pip install tensordict-nightly\n$ pip install torchrl-nightl",
+      "keywords": "nightly,ted,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-02cb92c5b4565995b910b4c40379f175",
+      "file_path": "s99_doc_13",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "dreamer",
+      "tgt_id": "tensordict",
+      "description": "tensordict and dreamer are related. Source: pytorch / rl\n\nPublic\n\nCode\n\nIssues\n\n201\n\nPull requests\n\n79\n\nDiscussions\n\nActions\n\nProjects\n\nReleases",
+      "keywords": "tensordict,dreamer,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-470090e85a59e80646d7722b11ba3b6a",
+      "file_path": "s99_doc_10",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "tensordict",
+      "tgt_id": "tensordict import tensordict",
+      "description": "tensordict and tensordict import tensordict are related. Source: Shape operations pass through: when placed in a TensorDict, operations that only affect shape (resha",
+      "keywords": "tensordict import tensordict,co-occurrence,tensordict",
+      "weight": 5.0,
+      "source_id": "chunk-28937cffec338fddaa6b3a10bdd14077",
+      "file_path": "s99_doc_8",
+      "created_at": 1774596330
+    },
+    {
+      "src_id": "gl",
+      "tgt_id": "meta platforms, inc.",
+      "description": "gl and meta platforms, inc. are related. Source: Licensee’s use of linmath.h header for CPU functions for GL vector/matrix operations from lunarG is",
+      "keywords": "gl,meta platforms, inc.,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-3cf0e0c27aa784e77a9af943a389b180",
+      "file_path": "s392_doc_16",
+      "created_at": 1774595009
+    },
+    {
+      "src_id": "gymenv",
+      "tgt_id": "tensordict",
+      "description": "gymenv and tensordict are related. Source: Use the sync parameter to choose between synchronous and asynchronous collection:\n\nfrom torchrl.coll",
+      "keywords": "gymenv,tensordict,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-21b1e86e509c35abb70f64a8e04dc2d3",
+      "file_path": "s99_doc_9",
+      "created_at": 1774596330
+    },
+    {
+      "src_id": "envbase",
+      "tgt_id": "tensordict",
+      "description": "tensordict and envbase are related. Source: import annotations\nimport _pickle\nimport abc\nimport collections\nimport contextlib\nimport functools\ni",
+      "keywords": "tensordict,envbase,co-occurrence",
+      "weight": 1.0,
+      "source_id": "chunk-7800cf64de2196ce8db73f8b4a03152c",
+      "file_path": "s99_doc_5",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "50",
+      "tgt_id": "tensordict",
+      "description": "tensordict and 50 are related. Source: episode[700:] = 4\n>>> data = TensorDict(\n...         \"episode\": episode,\n...         \"obs\": torch.ra",
+      "keywords": "tensordict,50,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-c8093f768d95a8aa0cf442c469e84649",
+      "file_path": "s99_doc_6",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "28",
+      "tgt_id": "tensordict",
+      "description": "tensordict and 28 are related. Source: Tensor dimension name\n\nfeature:\n\n>>> tensordict = TensorDict({}, batch_size=[3, 4], names=[\"a\", None",
+      "keywords": "co-occurrence,tensordict,28",
+      "weight": 1.5,
+      "source_id": "chunk-f669f391c14470ec631cf72a2e5eb721",
+      "file_path": "s99_doc_8",
+      "created_at": 1774596330
+    },
+    {
+      "src_id": "model_id",
+      "tgt_id": "tensordict",
+      "description": "model_id and tensordict are related. Source: A\n\npositional argument. An\n\nthe workers to update.\n\nidentifier to update\n\nmapping model_id to weight",
+      "keywords": "model_id,co-occurrence,tensordict",
+      "weight": 1.5,
+      "source_id": "chunk-aa1fcac487ca7fa3755083f68458a954",
+      "file_path": "s99_doc_1",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "0.",
+      "tgt_id": "tensordict",
+      "description": "tensordict and 0. are related. Source: To avoid this issue, consider one of these solutions:\n\nusing a  TensorDictReplayBuffer  instance wit",
+      "keywords": "0.,co-occurrence,tensordict",
+      "weight": 1.5,
+      "source_id": "chunk-ecbb3dcaa6672db6fe09532b3bebaf1a",
+      "file_path": "s99_doc_6",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "iterabledataset",
+      "tgt_id": "tensordict",
+      "description": "tensordict and iterabledataset are related. Source: import annotations\nimport _pickle\nimport abc\nimport collections\nimport contextlib\nimport functools\ni",
+      "keywords": "tensordict,iterabledataset,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-7800cf64de2196ce8db73f8b4a03152c",
+      "file_path": "s99_doc_5",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "self.policy_device",
+      "tgt_id": "tensordict",
+      "description": "self.policy_device and tensordict are related via \"be\". Source: self._policy_weights_dict = {}\nself._get_weights_fn_dict = {}\nif trust_policy is None:\ntrust_policy",
+      "keywords": "self.policy_device,co-occurrence,tensordict,be",
+      "weight": 2.0,
+      "source_id": "chunk-ca811f59473cb5fec41b4bd80fae00e2",
+      "file_path": "s99_doc_5",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "76",
+      "tgt_id": "tensordict",
+      "description": "tensordict and 76 are related. Source: To avoid this issue, consider one of these solutions:\n\nusing a  TensorDictReplayBuffer  instance wit",
+      "keywords": "76,co-occurrence,tensordict",
+      "weight": 1.5,
+      "source_id": "chunk-ecbb3dcaa6672db6fe09532b3bebaf1a",
+      "file_path": "s99_doc_6",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "77",
+      "tgt_id": "tensordict",
+      "description": "tensordict and 77 are related. Source: To avoid this issue, consider one of these solutions:\n\nusing a  TensorDictReplayBuffer  instance wit",
+      "keywords": "77,co-occurrence,tensordict",
+      "weight": 1.5,
+      "source_id": "chunk-ecbb3dcaa6672db6fe09532b3bebaf1a",
+      "file_path": "s99_doc_6",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "multicollector",
+      "tgt_id": "tensordict",
+      "description": "multicollector and tensordict are related. Source: Use the sync parameter to choose between synchronous and asynchronous collection:\n\nfrom torchrl.coll",
+      "keywords": "multicollector,tensordict,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-21b1e86e509c35abb70f64a8e04dc2d3",
+      "file_path": "s99_doc_9",
+      "created_at": 1774596330
+    },
+    {
+      "src_id": "envcreator",
+      "tgt_id": "tensordict",
+      "description": "tensordict and envcreator are related. Source: import annotations\nimport _pickle\nimport abc\nimport collections\nimport contextlib\nimport functools\ni",
+      "keywords": "tensordict,envcreator,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-7800cf64de2196ce8db73f8b4a03152c",
+      "file_path": "s99_doc_5",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "gae",
+      "tgt_id": "tensordict",
+      "description": "tensordict and gae are related. Source: If a functional module is provided, a nested TensorDict containing the parameters (and if relevant t",
+      "keywords": "co-occurrence,tensordict,gae",
+      "weight": 3.5,
+      "source_id": "chunk-2ee7e058f52919370f928f501c1fdec6",
+      "file_path": "s99_doc_2",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "tensordict",
+      "tgt_id": "true``",
+      "description": "true`` and tensordict are related. Source: return_same_td (bool, optional): if ``True``, the same TensorDict\nwill be returned at each iteration",
+      "keywords": "true``,co-occurrence,tensordict",
+      "weight": 1.5,
+      "source_id": "chunk-f6fa2b2fc99b8111ced6c41ce980c268",
+      "file_path": "s99_doc_5",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "tensordict",
+      "tgt_id": "torch.randn(3",
+      "description": "tensordict and torch.randn(3 are related. Source: In multiprocessing or distributed settings, TensorDict allows you to seamlessly dispatch data to eac",
+      "keywords": "co-occurrence,tensordict,torch.randn(3",
+      "weight": 4.5,
+      "source_id": "chunk-c91097b097aed1a051fa8e117f14315f",
+      "file_path": "s99_doc_8",
+      "created_at": 1774596330
+    },
+    {
+      "src_id": "stopiteration",
+      "tgt_id": "tensordict",
+      "description": "tensordict and stopiteration are related. Source: Args:\npolicy_weights (TensorDictBase, optional): if provided, a TensorDict containing\nthe weights of",
+      "keywords": "tensordict,stopiteration,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-544be99f53467c5a5e13f52f21aa4384",
+      "file_path": "s99_doc_5",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "stepcounter",
+      "tgt_id": "tensordict",
+      "description": "tensordict and stepcounter are related. Source: import annotations\nimport _pickle\nimport abc\nimport collections\nimport contextlib\nimport functools\ni",
+      "keywords": "tensordict,stepcounter,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-7800cf64de2196ce8db73f8b4a03152c",
+      "file_path": "s99_doc_5",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "parallelenv",
+      "tgt_id": "tensordict",
+      "description": "parallelenv and tensordict are related. Source: Use the sync parameter to choose between synchronous and asynchronous collection:\n\nfrom torchrl.coll",
+      "keywords": "parallelenv,tensordict,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-21b1e86e509c35abb70f64a8e04dc2d3",
+      "file_path": "s99_doc_9",
+      "created_at": 1774596330
+    },
+    {
+      "src_id": "slicesampler",
+      "tgt_id": "tensordict",
+      "description": "slicesampler and tensordict are related. Source: To avoid this issue, consider one of these solutions:\n\nusing a  TensorDictReplayBuffer  instance wit",
+      "keywords": "slicesampler,co-occurrence,tensordict",
+      "weight": 1.5,
+      "source_id": "chunk-ecbb3dcaa6672db6fe09532b3bebaf1a",
+      "file_path": "s99_doc_6",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "tensordict",
+      "tgt_id": "tensorspec",
+      "description": "tensordict and tensorspec are related. Source: import annotations\nimport _pickle\nimport abc\nimport collections\nimport contextlib\nimport functools\ni",
+      "keywords": "tensordict,tensorspec,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-7800cf64de2196ce8db73f8b4a03152c",
+      "file_path": "s99_doc_5",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "syncmanager",
+      "tgt_id": "tensordict",
+      "description": "syncmanager and tensordict are related. Source: import annotations\nimport _pickle\nimport abc\nimport collections\nimport contextlib\nimport functools\ni",
+      "keywords": "syncmanager,tensordict,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-7800cf64de2196ce8db73f8b4a03152c",
+      "file_path": "s99_doc_5",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "tensordict",
+      "tgt_id": "transformedenv",
+      "description": "tensordict and transformedenv are related. Source: import annotations\nimport _pickle\nimport abc\nimport collections\nimport contextlib\nimport functools\ni",
+      "keywords": "tensordict,transformedenv,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-7800cf64de2196ce8db73f8b4a03152c",
+      "file_path": "s99_doc_5",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "mit",
+      "tgt_id": "torchrl",
+      "description": "torchrl and mit are related. Source: Get started with Environments, TED and transforms\nGet started with TorchRL’s modules\nGetting started",
+      "keywords": "torchrl,mit,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-79d9cf783011ad9fe630e246831ed2e7",
+      "file_path": "s99_doc_5",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "sl",
+      "tgt_id": "tensordict",
+      "description": "tensordict and sl are related. Source: On this page we will motivate TensorDict and give some examples of what it can do.\n\n Motivation\n\nTen",
+      "keywords": "tensordict,sl,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-15b9361d72cd6ef9948dea0168ba15bf",
+      "file_path": "s99_doc_8",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "iql",
+      "tgt_id": "tensordict",
+      "description": "tensordict and iql are related. Source: TensorDict modules: Actors, exploration, value models and generative models\n\nHooks\n\nModels\n\nExplorat",
+      "keywords": "tensordict,iql,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-b15d1dab67b1739a10b83a2310c64a30",
+      "file_path": "s99_doc_13",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "module",
+      "tgt_id": "tensordict",
+      "description": "tensordict and module are related. Source: In subsequent iterations of the loop the updates will all be written in-place.\n\n TensorDictModule\n\nT",
+      "keywords": "module,co-occurrence,tensordict",
+      "weight": 1.5,
+      "source_id": "chunk-e628758255a480d3ad30b686ec0188e5",
+      "file_path": "s99_doc_8",
+      "created_at": 1774596330
+    },
+    {
+      "src_id": "collector",
+      "tgt_id": "tensordict",
+      "description": "collector and tensordict are related. Source: Use the sync parameter to choose between synchronous and asynchronous collection:\n\nfrom torchrl.coll",
+      "keywords": "collector,tensordict,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-21b1e86e509c35abb70f64a8e04dc2d3",
+      "file_path": "s99_doc_9",
+      "created_at": 1774596330
+    },
+    {
+      "src_id": "dict, iterator, optional",
+      "tgt_id": "tensordict",
+      "description": "dict, iterator, optional and tensordict are related. Source: import annotations\nimport _pickle\nimport abc\nimport collections\nimport contextlib\nimport functools\ni",
+      "keywords": "dict, iterator, optional,tensordict,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-7800cf64de2196ce8db73f8b4a03152c",
+      "file_path": "s99_doc_5",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "tensordict",
+      "tgt_id": "tensordict import",
+      "description": "tensordict import and tensordict are related. Source: import annotations\nimport _pickle\nimport abc\nimport collections\nimport contextlib\nimport functools\ni",
+      "keywords": "tensordict import,tensordict,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-7800cf64de2196ce8db73f8b4a03152c",
+      "file_path": "s99_doc_5",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "rb.sample(50",
+      "tgt_id": "tensordict",
+      "description": "tensordict and rb.sample(50 are related. Source: To avoid this issue, consider one of these solutions:\n\nusing a  TensorDictReplayBuffer  instance wit",
+      "keywords": "rb.sample(50,tensordict,co-occurrence",
+      "weight": 2.5,
+      "source_id": "chunk-ecbb3dcaa6672db6fe09532b3bebaf1a",
+      "file_path": "s99_doc_6",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "lazytensorstorage(max_size=1000",
+      "tgt_id": "tensordict",
+      "description": "lazytensorstorage(max_size=1000 and tensordict are related. Source: To avoid this issue, consider one of these solutions:\n\nusing a  TensorDictReplayBuffer  instance wit",
+      "keywords": "co-occurrence,tensordict,lazytensorstorage(max_size=1000",
+      "weight": 1.0,
+      "source_id": "chunk-ecbb3dcaa6672db6fe09532b3bebaf1a",
+      "file_path": "s99_doc_6",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "tensordict",
+      "tgt_id": "tensordicts",
+      "description": "tensordicts and tensordict are related. Source: Stacking with different data: when stacking TensorDicts that contain UnbatchedTensor entries with di",
+      "keywords": "tensordicts,tensordict,co-occurrence",
+      "weight": 3.0,
+      "source_id": "chunk-de6aa72d3b2d180e6076f97632515423",
+      "file_path": "s99_doc_8",
+      "created_at": 1774596330
+    },
+    {
+      "src_id": "78",
+      "tgt_id": "tensordict",
+      "description": "tensordict and 78 are related. Source: To avoid this issue, consider one of these solutions:\n\nusing a  TensorDictReplayBuffer  instance wit",
+      "keywords": "78,co-occurrence,tensordict",
+      "weight": 1.5,
+      "source_id": "chunk-ecbb3dcaa6672db6fe09532b3bebaf1a",
+      "file_path": "s99_doc_6",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "jacobians",
+      "tgt_id": "tensordict",
+      "description": "tensordict and jacobians are related. Source: The TensorDictModule is also compatible with vmap() and other torch.func capabilities.\n\n Jacobian an",
+      "keywords": "co-occurrence,tensordict,jacobians",
+      "weight": 1.5,
+      "source_id": "chunk-2414ee09de42ce9d3b318332e8cefae3",
+      "file_path": "s99_doc_8",
+      "created_at": 1774596330
+    },
+    {
+      "src_id": "hessians",
+      "tgt_id": "tensordict",
+      "description": "tensordict and hessians are related. Source: The TensorDictModule is also compatible with vmap() and other torch.func capabilities.\n\n Jacobian an",
+      "keywords": "hessians,co-occurrence,tensordict",
+      "weight": 1.5,
+      "source_id": "chunk-2414ee09de42ce9d3b318332e8cefae3",
+      "file_path": "s99_doc_8",
+      "created_at": 1774596330
+    },
+    {
+      "src_id": "jacobian",
+      "tgt_id": "tensordict",
+      "description": "tensordict and jacobian are related. Source: The TensorDictModule is also compatible with vmap() and other torch.func capabilities.\n\n Jacobian an",
+      "keywords": "co-occurrence,tensordict,jacobian",
+      "weight": 1.5,
+      "source_id": "chunk-2414ee09de42ce9d3b318332e8cefae3",
+      "file_path": "s99_doc_8",
+      "created_at": 1774596330
+    },
+    {
+      "src_id": "jacrev(f)(td",
+      "tgt_id": "tensordict",
+      "description": "tensordict and jacrev(f)(td are related. Source: Jacobian and Hessian computation\n\nTensorDict is compatible with torch.func.jacrev(), torch.func.jacf",
+      "keywords": "co-occurrence,tensordict,jacrev(f)(td",
+      "weight": 1.0,
+      "source_id": "chunk-2414ee09de42ce9d3b318332e8cefae3",
+      "file_path": "s99_doc_8",
+      "created_at": 1774596330
+    },
+    {
+      "src_id": "parallelenv(4",
+      "tgt_id": "tensordict",
+      "description": "parallelenv(4 and tensordict are related. Source: Use the sync parameter to choose between synchronous and asynchronous collection:\n\nfrom torchrl.coll",
+      "keywords": "parallelenv(4,tensordict,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-21b1e86e509c35abb70f64a8e04dc2d3",
+      "file_path": "s99_doc_9",
+      "created_at": 1774596330
+    },
+    {
+      "src_id": "make_env)",
+      "tgt_id": "tensordict",
+      "description": "make_env) and tensordict are related. Source: Use the sync parameter to choose between synchronous and asynchronous collection:\n\nfrom torchrl.coll",
+      "keywords": "make_env),tensordict,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-21b1e86e509c35abb70f64a8e04dc2d3",
+      "file_path": "s99_doc_9",
+      "created_at": 1774596330
+    },
+    {
+      "src_id": "interruptor",
+      "tgt_id": "tensordict",
+      "description": "tensordict and interruptor are related. Source: return_same_td (bool, optional): if ``True``, the same TensorDict\nwill be returned at each iteration",
+      "keywords": "tensordict,interruptor,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-f6fa2b2fc99b8111ced6c41ce980c268",
+      "file_path": "s99_doc_5",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "50)).expand(1000",
+      "tgt_id": "tensordict",
+      "description": "tensordict and 50)).expand(1000 are related. Source: episode[700:] = 4\n>>> data = TensorDict(\n...         \"episode\": episode,\n...         \"obs\": torch.ra",
+      "keywords": "tensordict,50)).expand(1000,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-c8093f768d95a8aa0cf442c469e84649",
+      "file_path": "s99_doc_6",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "abhishek",
+      "tgt_id": "tensordict",
+      "description": "abhishek and tensordict are related. Source: State dict reference ﬁxes\n\n@SendhilPanchadsaram (Sendhil Panchadsaram) - Documentation typo ﬁxes\n\n@a",
+      "keywords": "co-occurrence,tensordict,abhishek",
+      "weight": 1.0,
+      "source_id": "chunk-4114ce034729a4dc5ee5343fc8f896c3",
+      "file_path": "s99_doc_10",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "non-tensor data",
+      "tgt_id": "tensordict",
+      "description": "non-tensor data and tensordict are related via \"use\". Source: Stacked Non-Tensor Data\n\nIf you have a list of non-tensor data that you want to store in a TensorDic",
+      "keywords": "use,tensordict,non-tensor data,co-occurrence",
+      "weight": 5.5,
+      "source_id": "chunk-de6aa72d3b2d180e6076f97632515423",
+      "file_path": "s99_doc_8",
+      "created_at": 1774596330
+    },
+    {
+      "src_id": "tensordict",
+      "tgt_id": "unbatchedtensor",
+      "description": "tensordict and unbatchedtensor are related. Source: Escaping shape operations: UnbatchedTensor\n\nIn some cases, it may be desirable to store tensors in a",
+      "keywords": "unbatchedtensor,co-occurrence,tensordict",
+      "weight": 4.5,
+      "source_id": "chunk-42685d5b87c8a87f12ca02089dbe4850",
+      "file_path": "s99_doc_8",
+      "created_at": 1774596330
+    },
+    {
+      "src_id": "tensordict",
+      "tgt_id": "time_dim",
+      "description": "time_dim and tensordict are related. Source: The data\n\npassed to this module should be structured as [*B, T, *F] where B are the batch size, T th",
+      "keywords": "time_dim,co-occurrence,tensordict",
+      "weight": 2.0,
+      "source_id": "chunk-2ee7e058f52919370f928f501c1fdec6",
+      "file_path": "s99_doc_2",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "tensordict",
+      "tgt_id": "tensordict({\"obs",
+      "description": "tensordict and tensordict({\"obs are related. Source: If not provided, defaults to the\n\nmodule.\n\ndimension marked with the \"time\" name if\n\nany, and to the",
+      "keywords": "tensordict,co-occurrence,tensordict({\"obs",
+      "weight": 1.5,
+      "source_id": "chunk-d37aab400b0eb9fba0210bf2e493ada6",
+      "file_path": "s99_doc_2",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "motivation\n\ntensordict",
+      "tgt_id": "tensordict",
+      "description": "tensordict and motivation\n\ntensordict are related. Source: Finally, it is shipped with its own nn module which is compatible with torch.func and aims at making",
+      "keywords": "motivation\n\ntensordict,co-occurrence,tensordict",
+      "weight": 1.0,
+      "source_id": "chunk-15b9361d72cd6ef9948dea0168ba15bf",
+      "file_path": "s99_doc_8",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "meta platforms, inc.",
+      "tgt_id": "mit",
+      "description": "meta platforms, inc. and mit are related. Source: Get started with Environments, TED and transforms\nGet started with TorchRL’s modules\nGetting started",
+      "keywords": "meta platforms, inc.,mit,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-79d9cf783011ad9fe630e246831ed2e7",
+      "file_path": "s99_doc_5",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "next_reward",
+      "tgt_id": "tensordict",
+      "description": "tensordict and next_reward are related. Source: The module supports non-tensordict (i.e. unpacked tensordict) inputs too:\n\nExamples\n\n>>> value_net =",
+      "keywords": "tensordict,next_reward,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-8784a55d070ecb91414b66fedaa2f8fd",
+      "file_path": "s99_doc_2",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "lazymemmapstorage(max_size=1000000",
+      "tgt_id": "tensordict",
+      "description": "lazymemmapstorage(max_size=1000000 and tensordict are related. Source: Key Features\n\nFlexible storage\n\nAdvanced sampling\n\nComposable design: Mix\n\nType flexibility: Support",
+      "keywords": "lazymemmapstorage(max_size=1000000,tensordict,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-b41d8533268c51ad903ee2b7cf65279a",
+      "file_path": "s99_doc_3",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "replay\n\nreplay\n\nbuffer\n\nbuffers\n\nclasses\n\n previous\n\nnext",
+      "tgt_id": "tensordict",
+      "description": "tensordict and replay\n\nreplay\n\nbuffer\n\nbuffers\n\nclasses\n\n previous\n\nnext are related. Source: Key Features\n\nFlexible storage\n\nAdvanced sampling\n\nComposable design: Mix\n\nType flexibility: Support",
+      "keywords": "tensordict,replay\n\nreplay\n\nbuffer\n\nbuffers\n\nclasses\n\n previous\n\nnext,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-b41d8533268c51ad903ee2b7cf65279a",
+      "file_path": "s99_doc_3",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "lazytensorstorage",
+      "tgt_id": "tensordict",
+      "description": "lazytensorstorage and tensordict are related. Source: [1., 1., 1., 1., 0.]])\n\n>>> import torch\n>>> from tensordict import TensorDict\n>>> from torchrl.coll",
+      "keywords": "lazytensorstorage,tensordict,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-44007b0350c6dcc987adac3462d4b07e",
+      "file_path": "s99_doc_6",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "tensordict",
+      "tgt_id": "ul",
+      "description": "tensordict and ul are related. Source: On this page we will motivate TensorDict and give some examples of what it can do.\n\n Motivation\n\nTen",
+      "keywords": "tensordict,ul,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-15b9361d72cd6ef9948dea0168ba15bf",
+      "file_path": "s99_doc_8",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "ddpg",
+      "tgt_id": "mit",
+      "description": "ddpg and mit are related. Source: Get started with Environments, TED and transforms\nGet started with TorchRL’s modules\nGetting started",
+      "keywords": "ddpg,mit,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-79d9cf783011ad9fe630e246831ed2e7",
+      "file_path": "s99_doc_5",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "metadata",
+      "tgt_id": "tensordict",
+      "description": "tensordict and metadata are related. Source: Size([]), device=cpu, dtype=torch.float32, is_shared=False)},\n    batch_size=torch. Size([]),\n    de",
+      "keywords": "metadata,co-occurrence,tensordict",
+      "weight": 2.5,
+      "source_id": "chunk-28dd00ec65eb984e6e6911aa91f6901e",
+      "file_path": "s99_doc_8",
+      "created_at": 1774596330
+    },
+    {
+      "src_id": "tensordict",
+      "tgt_id": "zain rizvi",
+      "description": "zain rizvi and tensordict are related. Source: State dict reference ﬁxes\n\n@SendhilPanchadsaram (Sendhil Panchadsaram) - Documentation typo ﬁxes\n\n@a",
+      "keywords": "co-occurrence,tensordict,zain rizvi",
+      "weight": 1.5,
+      "source_id": "chunk-4114ce034729a4dc5ee5343fc8f896c3",
+      "file_path": "s99_doc_10",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "mikayla gawarecki",
+      "tgt_id": "tensordict",
+      "description": "mikayla gawarecki and tensordict are related. Source: State dict reference ﬁxes\n\n@SendhilPanchadsaram (Sendhil Panchadsaram) - Documentation typo ﬁxes\n\n@a",
+      "keywords": "co-occurrence,tensordict,mikayla gawarecki",
+      "weight": 1.5,
+      "source_id": "chunk-4114ce034729a4dc5ee5343fc8f896c3",
+      "file_path": "s99_doc_10",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "compatibility\n\npytorch:",
+      "tgt_id": "tensordict",
+      "description": "compatibility\n\npytorch: and tensordict are related. Source: State dict reference ﬁxes\n\n@SendhilPanchadsaram (Sendhil Panchadsaram) - Documentation typo ﬁxes\n\n@a",
+      "keywords": "co-occurrence,tensordict,compatibility\n\npytorch:",
+      "weight": 1.5,
+      "source_id": "chunk-4114ce034729a4dc5ee5343fc8f896c3",
+      "file_path": "s99_doc_10",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "tensordict",
+      "tgt_id": "tensordict.refine_names",
+      "description": "tensordict and tensordict.refine_names are related. Source: The semantic is similar to the torch. Tensor dimension name\n\nfeature:\n\n>>> tensordict = TensorDict({",
+      "keywords": "co-occurrence,tensordict,tensordict.refine_names",
+      "weight": 1.5,
+      "source_id": "chunk-f669f391c14470ec631cf72a2e5eb721",
+      "file_path": "s99_doc_8",
+      "created_at": 1774596330
+    },
+    {
+      "src_id": "self.get_weights_fn",
+      "tgt_id": "tensordict",
+      "description": "tensordict and self.get_weights_fn are related. Source: Args:\npolicy_weights (TensorDictBase, optional): if provided, a TensorDict containing\nthe weights of",
+      "keywords": "co-occurrence,tensordict,self.get_weights_fn",
+      "weight": 1.0,
+      "source_id": "chunk-544be99f53467c5a5e13f52f21aa4384",
+      "file_path": "s99_doc_5",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "print(td",
+      "tgt_id": "tensordict",
+      "description": "tensordict and print(td are related. Source: Creating a TensorDict with Non-Tensor Data\n\nYou can create a TensorDict with non-tensor data using t",
+      "keywords": "co-occurrence,tensordict,print(td",
+      "weight": 4.5,
+      "source_id": "chunk-de6aa72d3b2d180e6076f97632515423",
+      "file_path": "s99_doc_8",
+      "created_at": 1774596330
+    },
+    {
+      "src_id": "intermediate_x = tensordict[\"intermediate\"",
+      "tgt_id": "tensordict",
+      "description": "tensordict and intermediate_x = tensordict[\"intermediate\" are related. Source: Module):\n...     def forward(self, x, mask):\n...         return torch.softmax(x * mask, dim=1)\n>>> n",
+      "keywords": "intermediate_x = tensordict[\"intermediate\",co-occurrence,tensordict",
+      "weight": 1.5,
+      "source_id": "chunk-0bbc53816dded2be7a89c3430107727c",
+      "file_path": "s99_doc_8",
+      "created_at": 1774596330
+    },
+    {
+      "src_id": "probabilisticactor",
+      "tgt_id": "tensordict",
+      "description": "probabilisticactor and tensordict are related. Source: Here, we’ll be building an actor that relies on a regular\nnormal distribution using three components",
+      "keywords": "probabilisticactor,co-occurrence,tensordict",
+      "weight": 1.0,
+      "source_id": "chunk-510e6e8a741b60ad737c30ab329174b4",
+      "file_path": "s99_doc_12",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "mlp(in_features=3",
+      "tgt_id": "tensordict",
+      "description": "mlp(in_features=3 and tensordict are related. Source: Here, we’ll be building an actor that relies on a regular\nnormal distribution using three components",
+      "keywords": "co-occurrence,tensordict,mlp(in_features=3",
+      "weight": 1.0,
+      "source_id": "chunk-510e6e8a741b60ad737c30ab329174b4",
+      "file_path": "s99_doc_12",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "tensordict",
+      "tgt_id": "torch.randn(4",
+      "description": "tensordict and torch.randn(4 are related. Source: When tensors have no feature dimensions (their\nshape equals  batch_size ), the Jacobian basis vector",
+      "keywords": "co-occurrence,tensordict,torch.randn(4",
+      "weight": 1.0,
+      "source_id": "chunk-1b09aed476ad8d8c1162ea19269c7bd9",
+      "file_path": "s99_doc_8",
+      "created_at": 1774596330
+    },
+    {
+      "src_id": "tensordict",
+      "tgt_id": "timer",
+      "description": "timer and tensordict are related. Source: [Feature] reset_time in Timer (#2807) ( 5a46379 ) by @vmoens ghstack-source-id:\n\n36a74fd20b78e1cdde6",
+      "keywords": "timer,tensordict,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-8fe7180bce9cf6f9f8f1edf001c8ba00",
+      "file_path": "s99_doc_10",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "5a46379",
+      "tgt_id": "tensordict",
+      "description": "5a46379 and tensordict are related. Source: [Feature] reset_time in Timer (#2807) ( 5a46379 ) by @vmoens ghstack-source-id:\n\n36a74fd20b78e1cdde6",
+      "keywords": "5a46379,tensordict,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-8fe7180bce9cf6f9f8f1edf001c8ba00",
+      "file_path": "s99_doc_10",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "composite.set",
+      "tgt_id": "tensordict",
+      "description": "composite.set and tensordict are related. Source: [Feature] reset_time in Timer (#2807) ( 5a46379 ) by @vmoens ghstack-source-id:\n\n36a74fd20b78e1cdde6",
+      "keywords": "composite.set,tensordict,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-8fe7180bce9cf6f9f8f1edf001c8ba00",
+      "file_path": "s99_doc_10",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "normalparamextractor",
+      "tgt_id": "tensordict",
+      "description": "normalparamextractor and tensordict are related. Source: Here, we’ll be building an actor that relies on a regular\nnormal distribution using three components",
+      "keywords": "normalparamextractor,tensordict,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-510e6e8a741b60ad737c30ab329174b4",
+      "file_path": "s99_doc_12",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "tensordict",
+      "tgt_id": "type(policy_copy",
+      "description": "type(policy_copy and tensordict are related. Source: self._policy_weights_dict = {}\nself._get_weights_fn_dict = {}\nif trust_policy is None:\ntrust_policy",
+      "keywords": "type(policy_copy,tensordict,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-e821f338afe759275b04662948e11d66",
+      "file_path": "s99_doc_5",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "tensordict",
+      "tgt_id": "tensordict.from_module(policy_copy",
+      "description": "tensordict.from_module(policy_copy and tensordict are related. Source: self._policy_weights_dict = {}\nself._get_weights_fn_dict = {}\nif trust_policy is None:\ntrust_policy",
+      "keywords": "tensordict.from_module(policy_copy,tensordict,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-e821f338afe759275b04662948e11d66",
+      "file_path": "s99_doc_5",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "in_keys",
+      "tgt_id": "tensordict",
+      "description": "tensordict and in_keys are related. Source: tensordict = TensorDict(\n...         \"input\": TensorDict(\n...             {\"x\": torch.rand(32, 100),",
+      "keywords": "in_keys,co-occurrence,tensordict",
+      "weight": 1.0,
+      "source_id": "chunk-0bbc53816dded2be7a89c3430107727c",
+      "file_path": "s99_doc_8",
+      "created_at": 1774596330
+    },
+    {
+      "src_id": "tensordict",
+      "tgt_id": "tensordict.from_module(policy",
+      "description": "tensordict.from_module(policy and tensordict are related. Source: env_maker_kwargs (a dict, optional): the env_maker function kwargs.\n \"\"\"\nif policy_device is NO_DEFA",
+      "keywords": "co-occurrence,tensordict,tensordict.from_module(policy",
+      "weight": 1.0,
+      "source_id": "chunk-5baf6813cc584eec031b05e86e5055f7",
+      "file_path": "s99_doc_5",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "param_and_buf.values(true",
+      "tgt_id": "tensordict",
+      "description": "tensordict and param_and_buf.values(true are related. Source: env_maker_kwargs (a dict, optional): the env_maker function kwargs.\n \"\"\"\nif policy_device is NO_DEFA",
+      "keywords": "co-occurrence,tensordict,param_and_buf.values(true",
+      "weight": 1.0,
+      "source_id": "chunk-5baf6813cc584eec031b05e86e5055f7",
+      "file_path": "s99_doc_5",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "td1",
+      "tgt_id": "tensordict",
+      "description": "tensordict and td1 are related. Source: idx = splits[worker]\n...     pipe[worker].send(tensordict[idx])\n\n Some operations offered by TensorD",
+      "keywords": "co-occurrence,tensordict,td1",
+      "weight": 1.0,
+      "source_id": "chunk-c91097b097aed1a051fa8e117f14315f",
+      "file_path": "s99_doc_8",
+      "created_at": 1774596330
+    },
+    {
+      "src_id": "mit",
+      "tgt_id": "ted",
+      "description": "ted and mit are related. Source: Get started with Environments, TED and transforms\nGet started with TorchRL’s modules\nGetting started",
+      "keywords": "ted,mit,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-79d9cf783011ad9fe630e246831ed2e7",
+      "file_path": "s99_doc_5",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "tensordict",
+      "tgt_id": "tensordict.to(\"cuda:0",
+      "description": "tensordict and tensordict.to(\"cuda:0 are related. Source: The contents of the TensorDict can now be manipulated collectively. For example, to place all of the",
+      "keywords": "tensordict,tensordict.to(\"cuda:0,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-f1988e0e5caa3b5c530e9e846601d5f8",
+      "file_path": "s99_doc_8",
+      "created_at": 1774596330
+    },
+    {
+      "src_id": "masker",
+      "tgt_id": "tensordict",
+      "description": "masker and tensordict are related. Source: Module):\n...     def forward(self, x, mask):\n...         return torch.softmax(x * mask, dim=1)\n>>> n",
+      "keywords": "masker,tensordict,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-0bbc53816dded2be7a89c3430107727c",
+      "file_path": "s99_doc_8",
+      "created_at": 1774596330
+    },
+    {
+      "src_id": "tensordict",
+      "tgt_id": "torch.zeros(*batch",
+      "description": "tensordict and torch.zeros(*batch are related. Source: [10,]\n>>> data = TensorDict({\n...     \"observation\": torch.randn(*batch, n_obs),\n...     \"action\": s",
+      "keywords": "torch.zeros(*batch,co-occurrence,tensordict",
+      "weight": 1.0,
+      "source_id": "chunk-b374d85a0649ff722aebb5e72f25a0f8",
+      "file_path": "s99_doc_11",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "metatensor",
+      "tgt_id": "tensordict",
+      "description": "tensordict and metatensor are related. Source: One can avoid this by simply calling\n\ntensordict.contiguous() after the execution of stack. To furth",
+      "keywords": "metatensor,co-occurrence,tensordict",
+      "weight": 1.0,
+      "source_id": "chunk-e628758255a480d3ad30b686ec0188e5",
+      "file_path": "s99_doc_8",
+      "created_at": 1774596330
+    },
+    {
+      "src_id": "tensordict",
+      "tgt_id": "tensordict[\"outputs",
+      "description": "tensordict[\"outputs and tensordict are related. Source: This is a key reason we can write reusable, generic high-level code such as the training loop in the",
+      "keywords": "tensordict[\"outputs,co-occurrence,tensordict",
+      "weight": 1.0,
+      "source_id": "chunk-caad095402ba3c1f8495fa35ba3c5a48",
+      "file_path": "s99_doc_8",
+      "created_at": 1774596330
+    },
+    {
+      "src_id": "mit",
+      "tgt_id": "using replay buffers\nexporting",
+      "description": "using replay buffers\nexporting and mit are related. Source: Get started with Environments, TED and transforms\nGet started with TorchRL’s modules\nGetting started",
+      "keywords": "using replay buffers\nexporting,mit,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-79d9cf783011ad9fe630e246831ed2e7",
+      "file_path": "s99_doc_5",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "q-value",
+      "tgt_id": "tensordict",
+      "description": "q-value and tensordict are related. Source: We build a value network that produces one value per action when it reads a state from the environme",
+      "keywords": "q-value,tensordict,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-1887f346f46c0ac0e6d1a9e6340ff00d",
+      "file_path": "s99_doc_12",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "none``",
+      "tgt_id": "tensordict",
+      "description": "none`` and tensordict are related. Source: The ``device`` args fills any non-specified device: if\n``device`` is not ``None`` and any of ``stori",
+      "keywords": "none``,tensordict,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-12bfc11874e8065972614049837fd134",
+      "file_path": "s99_doc_5",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "mit",
+      "tgt_id": "tutorial\npendulum",
+      "description": "tutorial\npendulum and mit are related. Source: Get started with Environments, TED and transforms\nGet started with TorchRL’s modules\nGetting started",
+      "keywords": "tutorial\npendulum,mit,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-79d9cf783011ad9fe630e246831ed2e7",
+      "file_path": "s99_doc_5",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "ppo",
+      "tgt_id": "torchrl",
+      "description": "torchrl and ppo are related. Source: Get started with Environments, TED and transforms\nGet started with TorchRL’s modules\nGetting started",
+      "keywords": "torchrl,ppo,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-79d9cf783011ad9fe630e246831ed2e7",
+      "file_path": "s99_doc_5",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "meta platforms, inc.",
+      "tgt_id": "ppo",
+      "description": "ppo and meta platforms, inc. are related. Source: Get started with Environments, TED and transforms\nGet started with TorchRL’s modules\nGetting started",
+      "keywords": "ppo,meta platforms, inc.,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-79d9cf783011ad9fe630e246831ed2e7",
+      "file_path": "s99_doc_5",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "ddpg",
+      "tgt_id": "ppo",
+      "description": "ppo and ddpg are related. Source: Get started with Environments, TED and transforms\nGet started with TorchRL’s modules\nGetting started",
+      "keywords": "ppo,ddpg,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-79d9cf783011ad9fe630e246831ed2e7",
+      "file_path": "s99_doc_5",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "ppo",
+      "tgt_id": "ted",
+      "description": "ted and ppo are related. Source: Get started with Environments, TED and transforms\nGet started with TorchRL’s modules\nGetting started",
+      "keywords": "ted,ppo,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-79d9cf783011ad9fe630e246831ed2e7",
+      "file_path": "s99_doc_5",
+      "created_at": 1774596329
+    },
+    {
+      "src_id": "collector",
+      "tgt_id": "ppo",
+      "description": "ppo and collector are related. Source: Use the sync parameter to choose between synchronous and asynchronous collection:\n\nfrom torchrl.coll",
+      "keywords": "ppo,collector,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-21b1e86e509c35abb70f64a8e04dc2d3",
+      "file_path": "s99_doc_9",
+      "created_at": 1774596330
+    },
+    {
+      "src_id": "ppo",
+      "tgt_id": "using replay buffers\nexporting",
+      "description": "ppo and using replay buffers\nexporting are related. Source: Get started with Environments, TED and transforms\nGet started with TorchRL’s modules\nGetting started",
+      "keywords": "ppo,using replay buffers\nexporting,co-occurrence",
+      "weight": 0.5,
+      "source_id": "chunk-79d9cf783011ad9fe630e246831ed2e7",
+      "file_path": "s99_doc_5",
+      "created_at": 1774596329
+    }
+  ],
+  "ordered_docs": [
+    "s99_doc_13",
+    "s99_doc_5",
+    "s99_doc_6",
+    "s99_doc_1",
+    "s99_doc_9",
+    "s99_doc_14",
+    "s99_doc_10",
+    "s99_doc_11",
+    "s99_doc_3",
+    "s9_doc_3"
+  ]
+}

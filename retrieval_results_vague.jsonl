@@ -1,0 +1,101 @@
+{"summary": {"macro_recall": 0.2535, "num_queries_evaluated": 100, "mode": "hybrid", "top_k": 10}}
+{"query_id": "g110", "recall": 0.1429, "hits": 1, "relevant_total": 7, "retrieved_total": 10, "hit_docs": ["g110_doc_3"], "missed_docs": ["g110_doc_4", "g110_doc_6", "g110_doc_1", "g110_doc_2", "g110_doc_7", "g110_doc_5"]}
+{"query_id": "g145", "recall": 0.0, "hits": 0, "relevant_total": 7, "retrieved_total": 10, "hit_docs": [], "missed_docs": ["g145_doc_3", "g145_doc_5", "g145_doc_7", "g145_doc_2", "g145_doc_4", "g145_doc_1", "g145_doc_6"]}
+{"query_id": "g148", "recall": 0.25, "hits": 1, "relevant_total": 4, "retrieved_total": 10, "hit_docs": ["g148_doc_1"], "missed_docs": ["g148_doc_2", "g148_doc_3", "g148_doc_5"]}
+{"query_id": "g154", "recall": 0.0, "hits": 0, "relevant_total": 6, "retrieved_total": 10, "hit_docs": [], "missed_docs": ["g154_doc_2", "g154_doc_5", "g154_doc_6", "g154_doc_1", "g154_doc_4", "g154_doc_3"]}
+{"query_id": "g158", "recall": 0.0, "hits": 0, "relevant_total": 5, "retrieved_total": 10, "hit_docs": [], "missed_docs": ["g158_doc_2", "g158_doc_6", "g158_doc_3", "g158_doc_1", "g158_doc_5"]}
+{"query_id": "g179", "recall": 0.2857, "hits": 2, "relevant_total": 7, "retrieved_total": 10, "hit_docs": ["g179_doc_7", "g179_doc_5"], "missed_docs": ["g179_doc_2", "g179_doc_1", "g179_doc_4", "g179_doc_3", "g179_doc_6"]}
+{"query_id": "g183", "recall": 0.1429, "hits": 1, "relevant_total": 7, "retrieved_total": 10, "hit_docs": ["g183_doc_6"], "missed_docs": ["g183_doc_4", "g183_doc_1", "g183_doc_5", "g183_doc_3", "g183_doc_8", "g183_doc_2"]}
+{"query_id": "g201", "recall": 0.25, "hits": 1, "relevant_total": 4, "retrieved_total": 10, "hit_docs": ["g201_doc_1"], "missed_docs": ["g201_doc_2", "g201_doc_3", "g201_doc_5"]}
+{"query_id": "g24", "recall": 0.0, "hits": 0, "relevant_total": 6, "retrieved_total": 10, "hit_docs": [], "missed_docs": ["g24_doc_5", "g24_doc_2", "g24_doc_4", "g24_doc_6", "g24_doc_3", "g24_doc_1"]}
+{"query_id": "g30", "recall": 0.125, "hits": 1, "relevant_total": 8, "retrieved_total": 10, "hit_docs": ["g30_doc_2"], "missed_docs": ["g30_doc_1", "g30_doc_8", "g30_doc_4", "g30_doc_6", "g30_doc_5", "g30_doc_3", "g30_doc_7"]}
+{"query_id": "g34", "recall": 0.0, "hits": 0, "relevant_total": 3, "retrieved_total": 10, "hit_docs": [], "missed_docs": ["g34_doc_4", "g34_doc_2", "g34_doc_1"]}
+{"query_id": "g48", "recall": 0.3333, "hits": 2, "relevant_total": 6, "retrieved_total": 10, "hit_docs": ["g48_doc_7", "g48_doc_3"], "missed_docs": ["g48_doc_2", "g48_doc_4", "g48_doc_1", "g48_doc_5"]}
+{"query_id": "g5", "recall": 0.0, "hits": 0, "relevant_total": 4, "retrieved_total": 10, "hit_docs": [], "missed_docs": ["g5_doc_4", "g5_doc_2", "g5_doc_1", "g5_doc_5"]}
+{"query_id": "g63", "recall": 0.0, "hits": 0, "relevant_total": 7, "retrieved_total": 10, "hit_docs": [], "missed_docs": ["g63_doc_4", "g63_doc_3", "g63_doc_5", "g63_doc_2", "g63_doc_7", "g63_doc_6", "g63_doc_1"]}
+{"query_id": "g73", "recall": 0.3333, "hits": 2, "relevant_total": 6, "retrieved_total": 10, "hit_docs": ["g73_doc_6", "g73_doc_5"], "missed_docs": ["g73_doc_4", "g73_doc_2", "g73_doc_3", "g73_doc_1"]}
+{"query_id": "g75", "recall": 0.2, "hits": 1, "relevant_total": 5, "retrieved_total": 10, "hit_docs": ["g75_doc_7"], "missed_docs": ["g75_doc_3", "g75_doc_2", "g75_doc_4", "g75_doc_1"]}
+{"query_id": "g81", "recall": 0.375, "hits": 3, "relevant_total": 8, "retrieved_total": 10, "hit_docs": ["g81_doc_5", "g81_doc_6", "g81_doc_2"], "missed_docs": ["g81_doc_3", "g81_doc_1", "g81_doc_7", "g81_doc_4", "g81_doc_8"]}
+{"query_id": "g89", "recall": 0.1667, "hits": 1, "relevant_total": 6, "retrieved_total": 10, "hit_docs": ["g89_doc_6"], "missed_docs": ["g89_doc_3", "g89_doc_5", "g89_doc_2", "g89_doc_1", "g89_doc_4"]}
+{"query_id": "g91", "recall": 0.1667, "hits": 1, "relevant_total": 6, "retrieved_total": 10, "hit_docs": ["g91_doc_4"], "missed_docs": ["g91_doc_6", "g91_doc_8", "g91_doc_1", "g91_doc_3", "g91_doc_2"]}
+{"query_id": "o108", "recall": 0.0, "hits": 0, "relevant_total": 5, "retrieved_total": 10, "hit_docs": [], "missed_docs": ["o108_doc_2", "o108_doc_0", "o108_doc_4", "o108_doc_1", "o108_doc_3"]}
+{"query_id": "o132", "recall": 0.0, "hits": 0, "relevant_total": 5, "retrieved_total": 10, "hit_docs": [], "missed_docs": ["o132_doc_2", "o132_doc_4", "o132_doc_0", "o132_doc_1", "o132_doc_3"]}
+{"query_id": "o16", "recall": 0.6667, "hits": 2, "relevant_total": 3, "retrieved_total": 10, "hit_docs": ["o16_doc_0", "o16_doc_2"], "missed_docs": ["o16_doc_1"]}
+{"query_id": "o166", "recall": 0.5, "hits": 3, "relevant_total": 6, "retrieved_total": 9, "hit_docs": ["o166_doc_3", "o166_doc_2", "o166_doc_1"], "missed_docs": ["o166_doc_5", "o166_doc_4", "o166_doc_0"]}
+{"query_id": "o19", "recall": 0.5, "hits": 1, "relevant_total": 2, "retrieved_total": 9, "hit_docs": ["o19_doc_1"], "missed_docs": ["o19_doc_0"]}
+{"query_id": "o197", "recall": 0.25, "hits": 1, "relevant_total": 4, "retrieved_total": 10, "hit_docs": ["o197_doc_3"], "missed_docs": ["o197_doc_1", "o197_doc_2", "o197_doc_0"]}
+{"query_id": "o202", "recall": 0.2, "hits": 1, "relevant_total": 5, "retrieved_total": 10, "hit_docs": ["o202_doc_3"], "missed_docs": ["o202_doc_1", "o202_doc_0", "o202_doc_4", "o202_doc_2"]}
+{"query_id": "o203", "recall": 0.0, "hits": 0, "relevant_total": 5, "retrieved_total": 10, "hit_docs": [], "missed_docs": ["o203_doc_0", "o203_doc_1", "o203_doc_3", "o203_doc_4", "o203_doc_2"]}
+{"query_id": "o218", "recall": 0.5, "hits": 2, "relevant_total": 4, "retrieved_total": 10, "hit_docs": ["o218_doc_2", "o218_doc_3"], "missed_docs": ["o218_doc_1", "o218_doc_0"]}
+{"query_id": "o257", "recall": 0.0, "hits": 0, "relevant_total": 4, "retrieved_total": 10, "hit_docs": [], "missed_docs": ["o257_doc_3", "o257_doc_0", "o257_doc_1", "o257_doc_2"]}
+{"query_id": "o27", "recall": 0.3333, "hits": 1, "relevant_total": 3, "retrieved_total": 10, "hit_docs": ["o27_doc_1"], "missed_docs": ["o27_doc_0", "o27_doc_2"]}
+{"query_id": "o29", "recall": 0.0, "hits": 0, "relevant_total": 5, "retrieved_total": 10, "hit_docs": [], "missed_docs": ["o29_doc_0", "o29_doc_3", "o29_doc_4", "o29_doc_2", "o29_doc_1"]}
+{"query_id": "o292", "recall": 0.0, "hits": 0, "relevant_total": 3, "retrieved_total": 10, "hit_docs": [], "missed_docs": ["o292_doc_2", "o292_doc_0", "o292_doc_1"]}
+{"query_id": "o295", "recall": 0.0, "hits": 0, "relevant_total": 6, "retrieved_total": 10, "hit_docs": [], "missed_docs": ["o295_doc_3", "o295_doc_1", "o295_doc_4", "o295_doc_2", "o295_doc_0", "o295_doc_5"]}
+{"query_id": "o3", "recall": 0.0, "hits": 0, "relevant_total": 3, "retrieved_total": 10, "hit_docs": [], "missed_docs": ["o3_doc_1", "o3_doc_2", "o3_doc_0"]}
+{"query_id": "o305", "recall": 0.0, "hits": 0, "relevant_total": 3, "retrieved_total": 10, "hit_docs": [], "missed_docs": ["o305_doc_1", "o305_doc_2", "o305_doc_0"]}
+{"query_id": "o307", "recall": 0.5, "hits": 1, "relevant_total": 2, "retrieved_total": 10, "hit_docs": ["o307_doc_0"], "missed_docs": ["o307_doc_1"]}
+{"query_id": "o309", "recall": 0.0, "hits": 0, "relevant_total": 3, "retrieved_total": 10, "hit_docs": [], "missed_docs": ["o309_doc_1", "o309_doc_2", "o309_doc_0"]}
+{"query_id": "o314", "recall": 0.0, "hits": 0, "relevant_total": 5, "retrieved_total": 10, "hit_docs": [], "missed_docs": ["o314_doc_2", "o314_doc_3", "o314_doc_0", "o314_doc_1", "o314_doc_4"]}
+{"query_id": "o322", "recall": 0.0, "hits": 0, "relevant_total": 3, "retrieved_total": 10, "hit_docs": [], "missed_docs": ["o322_doc_1", "o322_doc_0", "o322_doc_2"]}
+{"query_id": "o325", "recall": 0.2, "hits": 1, "relevant_total": 5, "retrieved_total": 10, "hit_docs": ["o325_doc_0"], "missed_docs": ["o325_doc_2", "o325_doc_1", "o325_doc_3", "o325_doc_4"]}
+{"query_id": "o331", "recall": 0.3333, "hits": 1, "relevant_total": 3, "retrieved_total": 10, "hit_docs": ["o331_doc_0"], "missed_docs": ["o331_doc_2", "o331_doc_1"]}
+{"query_id": "o354", "recall": 0.0, "hits": 0, "relevant_total": 5, "retrieved_total": 10, "hit_docs": [], "missed_docs": ["o354_doc_0", "o354_doc_1", "o354_doc_3", "o354_doc_4", "o354_doc_2"]}
+{"query_id": "o358", "recall": 0.0, "hits": 0, "relevant_total": 3, "retrieved_total": 10, "hit_docs": [], "missed_docs": ["o358_doc_2", "o358_doc_1", "o358_doc_0"]}
+{"query_id": "o388", "recall": 0.3333, "hits": 2, "relevant_total": 6, "retrieved_total": 10, "hit_docs": ["o388_doc_4", "o388_doc_0"], "missed_docs": ["o388_doc_1", "o388_doc_5", "o388_doc_3", "o388_doc_2"]}
+{"query_id": "o390", "recall": 0.2, "hits": 1, "relevant_total": 5, "retrieved_total": 10, "hit_docs": ["o390_doc_3"], "missed_docs": ["o390_doc_4", "o390_doc_2", "o390_doc_1", "o390_doc_0"]}
+{"query_id": "o391", "recall": 0.25, "hits": 1, "relevant_total": 4, "retrieved_total": 10, "hit_docs": ["o391_doc_1"], "missed_docs": ["o391_doc_3", "o391_doc_2", "o391_doc_0"]}
+{"query_id": "o395", "recall": 0.5, "hits": 3, "relevant_total": 6, "retrieved_total": 10, "hit_docs": ["o395_doc_3", "o395_doc_2", "o395_doc_1"], "missed_docs": ["o395_doc_5", "o395_doc_0", "o395_doc_4"]}
+{"query_id": "o397", "recall": 0.3333, "hits": 2, "relevant_total": 6, "retrieved_total": 10, "hit_docs": ["o397_doc_4", "o397_doc_1"], "missed_docs": ["o397_doc_0", "o397_doc_3", "o397_doc_5", "o397_doc_2"]}
+{"query_id": "o42", "recall": 0.0, "hits": 0, "relevant_total": 6, "retrieved_total": 10, "hit_docs": [], "missed_docs": ["o42_doc_5", "o42_doc_0", "o42_doc_3", "o42_doc_1", "o42_doc_2", "o42_doc_4"]}
+{"query_id": "o52", "recall": 0.3333, "hits": 1, "relevant_total": 3, "retrieved_total": 10, "hit_docs": ["o52_doc_0"], "missed_docs": ["o52_doc_2", "o52_doc_1"]}
+{"query_id": "o58", "recall": 0.0, "hits": 0, "relevant_total": 5, "retrieved_total": 10, "hit_docs": [], "missed_docs": ["o58_doc_1", "o58_doc_2", "o58_doc_4", "o58_doc_3", "o58_doc_0"]}
+{"query_id": "o79", "recall": 0.3333, "hits": 1, "relevant_total": 3, "retrieved_total": 3, "hit_docs": ["o79_doc_0"], "missed_docs": ["o79_doc_2", "o79_doc_1"]}
+{"query_id": "o86", "recall": 0.6667, "hits": 2, "relevant_total": 3, "retrieved_total": 10, "hit_docs": ["o86_doc_1", "o86_doc_2"], "missed_docs": ["o86_doc_0"]}
+{"query_id": "s125", "recall": 0.1667, "hits": 1, "relevant_total": 6, "retrieved_total": 10, "hit_docs": ["s125_doc_1"], "missed_docs": ["s125_doc_3", "s125_doc_7", "s125_doc_0", "s125_doc_2", "s125_doc_4"]}
+{"query_id": "s127", "recall": 1.0, "hits": 2, "relevant_total": 2, "retrieved_total": 10, "hit_docs": ["s127_doc_0", "s127_doc_2"], "missed_docs": []}
+{"query_id": "s143", "recall": 0.6667, "hits": 2, "relevant_total": 3, "retrieved_total": 10, "hit_docs": ["s143_doc_0", "s143_doc_3"], "missed_docs": ["s143_doc_1"]}
+{"query_id": "s166", "recall": 0.0, "hits": 0, "relevant_total": 2, "retrieved_total": 10, "hit_docs": [], "missed_docs": ["s166_doc_2", "s166_doc_1"]}
+{"query_id": "s172", "recall": 0.1667, "hits": 1, "relevant_total": 6, "retrieved_total": 10, "hit_docs": ["s172_doc_0"], "missed_docs": ["s172_doc_2", "s172_doc_1", "s172_doc_7", "s172_doc_3", "s172_doc_6"]}
+{"query_id": "s18", "recall": 0.25, "hits": 1, "relevant_total": 4, "retrieved_total": 10, "hit_docs": ["s18_doc_6"], "missed_docs": ["s18_doc_4", "s18_doc_1", "s18_doc_3"]}
+{"query_id": "s20", "recall": 0.6667, "hits": 4, "relevant_total": 6, "retrieved_total": 10, "hit_docs": ["s20_doc_5", "s20_doc_9", "s20_doc_2", "s20_doc_7"], "missed_docs": ["s20_doc_3", "s20_doc_4"]}
+{"query_id": "s207", "recall": 0.5, "hits": 1, "relevant_total": 2, "retrieved_total": 10, "hit_docs": ["s207_doc_0"], "missed_docs": ["s207_doc_3"]}
+{"query_id": "s211", "recall": 0.0, "hits": 0, "relevant_total": 2, "retrieved_total": 10, "hit_docs": [], "missed_docs": ["s211_doc_2", "s211_doc_3"]}
+{"query_id": "s218", "recall": 0.6667, "hits": 4, "relevant_total": 6, "retrieved_total": 10, "hit_docs": ["s218_doc_9", "s218_doc_7", "s218_doc_3", "s218_doc_0"], "missed_docs": ["s218_doc_8", "s218_doc_2"]}
+{"query_id": "s228", "recall": 0.5, "hits": 2, "relevant_total": 4, "retrieved_total": 10, "hit_docs": ["s228_doc_3", "s228_doc_4"], "missed_docs": ["s228_doc_6", "s228_doc_2"]}
+{"query_id": "s243", "recall": 1.0, "hits": 1, "relevant_total": 1, "retrieved_total": 10, "hit_docs": ["s243_doc_0"], "missed_docs": []}
+{"query_id": "s245", "recall": 0.0, "hits": 0, "relevant_total": 5, "retrieved_total": 10, "hit_docs": [], "missed_docs": ["s245_doc_2", "s245_doc_5", "s245_doc_4", "s245_doc_1", "s245_doc_3"]}
+{"query_id": "s246", "recall": 0.2, "hits": 1, "relevant_total": 5, "retrieved_total": 10, "hit_docs": ["s246_doc_4"], "missed_docs": ["s246_doc_5", "s246_doc_1", "s246_doc_0", "s246_doc_6"]}
+{"query_id": "s275", "recall": 0.0, "hits": 0, "relevant_total": 2, "retrieved_total": 10, "hit_docs": [], "missed_docs": ["s275_doc_0", "s275_doc_2"]}
+{"query_id": "s285", "recall": 0.0, "hits": 0, "relevant_total": 2, "retrieved_total": 10, "hit_docs": [], "missed_docs": ["s285_doc_0", "s285_doc_2"]}
+{"query_id": "s319", "recall": 0.0, "hits": 0, "relevant_total": 6, "retrieved_total": 10, "hit_docs": [], "missed_docs": ["s319_doc_2", "s319_doc_6", "s319_doc_1", "s319_doc_4", "s319_doc_9", "s319_doc_8"]}
+{"query_id": "s323", "recall": 0.8, "hits": 4, "relevant_total": 5, "retrieved_total": 10, "hit_docs": ["s323_doc_5", "s323_doc_6", "s323_doc_3", "s323_doc_2"], "missed_docs": ["s323_doc_1"]}
+{"query_id": "s324", "recall": 0.0, "hits": 0, "relevant_total": 1, "retrieved_total": 10, "hit_docs": [], "missed_docs": ["s324_doc_1"]}
+{"query_id": "s373", "recall": 0.0, "hits": 0, "relevant_total": 3, "retrieved_total": 10, "hit_docs": [], "missed_docs": ["s373_doc_3", "s373_doc_5", "s373_doc_1"]}
+{"query_id": "s381", "recall": 0.5, "hits": 2, "relevant_total": 4, "retrieved_total": 7, "hit_docs": ["s381_doc_4", "s381_doc_1"], "missed_docs": ["s381_doc_0", "s381_doc_3"]}
+{"query_id": "s391", "recall": 0.1667, "hits": 1, "relevant_total": 6, "retrieved_total": 10, "hit_docs": ["s391_doc_4"], "missed_docs": ["s391_doc_6", "s391_doc_1", "s391_doc_9", "s391_doc_5", "s391_doc_2"]}
+{"query_id": "s392", "recall": 0.0, "hits": 0, "relevant_total": 5, "retrieved_total": 10, "hit_docs": [], "missed_docs": ["s392_doc_0", "s392_doc_3", "s392_doc_1", "s392_doc_4", "s392_doc_2"]}
+{"query_id": "s398", "recall": 0.6667, "hits": 2, "relevant_total": 3, "retrieved_total": 9, "hit_docs": ["s398_doc_2", "s398_doc_0"], "missed_docs": ["s398_doc_4"]}
+{"query_id": "s466", "recall": 0.2, "hits": 1, "relevant_total": 5, "retrieved_total": 10, "hit_docs": ["s466_doc_3"], "missed_docs": ["s466_doc_4", "s466_doc_1", "s466_doc_7", "s466_doc_5"]}
+{"query_id": "s477", "recall": 0.0, "hits": 0, "relevant_total": 4, "retrieved_total": 10, "hit_docs": [], "missed_docs": ["s477_doc_8", "s477_doc_2", "s477_doc_6", "s477_doc_7"]}
+{"query_id": "s53", "recall": 0.0, "hits": 0, "relevant_total": 1, "retrieved_total": 10, "hit_docs": [], "missed_docs": ["s53_doc_1"]}
+{"query_id": "s534", "recall": 0.6667, "hits": 2, "relevant_total": 3, "retrieved_total": 10, "hit_docs": ["s534_doc_3", "s534_doc_4"], "missed_docs": ["s534_doc_2"]}
+{"query_id": "s539", "recall": 0.0, "hits": 0, "relevant_total": 5, "retrieved_total": 9, "hit_docs": [], "missed_docs": ["s539_doc_0", "s539_doc_1", "s539_doc_5", "s539_doc_3", "s539_doc_6"]}
+{"query_id": "s550", "recall": 0.6667, "hits": 2, "relevant_total": 3, "retrieved_total": 10, "hit_docs": ["s550_doc_1", "s550_doc_4"], "missed_docs": ["s550_doc_3"]}
+{"query_id": "s563", "recall": 0.6667, "hits": 2, "relevant_total": 3, "retrieved_total": 10, "hit_docs": ["s563_doc_2", "s563_doc_0"], "missed_docs": ["s563_doc_4"]}
+{"query_id": "s572", "recall": 0.2, "hits": 1, "relevant_total": 5, "retrieved_total": 10, "hit_docs": ["s572_doc_1"], "missed_docs": ["s572_doc_2", "s572_doc_4", "s572_doc_5", "s572_doc_0"]}
+{"query_id": "s580", "recall": 1.0, "hits": 2, "relevant_total": 2, "retrieved_total": 10, "hit_docs": ["s580_doc_1", "s580_doc_3"], "missed_docs": []}
+{"query_id": "s591", "recall": 0.0, "hits": 0, "relevant_total": 1, "retrieved_total": 10, "hit_docs": [], "missed_docs": ["s591_doc_0"]}
+{"query_id": "s61", "recall": 0.0, "hits": 0, "relevant_total": 2, "retrieved_total": 10, "hit_docs": [], "missed_docs": ["s61_doc_2", "s61_doc_0"]}
+{"query_id": "s623", "recall": 0.3333, "hits": 1, "relevant_total": 3, "retrieved_total": 10, "hit_docs": ["s623_doc_4"], "missed_docs": ["s623_doc_1", "s623_doc_3"]}
+{"query_id": "s631", "recall": 0.0, "hits": 0, "relevant_total": 5, "retrieved_total": 6, "hit_docs": [], "missed_docs": ["s631_doc_5", "s631_doc_3", "s631_doc_0", "s631_doc_1", "s631_doc_2"]}
+{"query_id": "s634", "recall": 0.5, "hits": 1, "relevant_total": 2, "retrieved_total": 10, "hit_docs": ["s634_doc_2"], "missed_docs": ["s634_doc_1"]}
+{"query_id": "s655", "recall": 0.5, "hits": 1, "relevant_total": 2, "retrieved_total": 10, "hit_docs": ["s655_doc_2"], "missed_docs": ["s655_doc_1"]}
+{"query_id": "s659", "recall": 0.0, "hits": 0, "relevant_total": 4, "retrieved_total": 10, "hit_docs": [], "missed_docs": ["s659_doc_2", "s659_doc_0", "s659_doc_1", "s659_doc_3"]}
+{"query_id": "s669", "recall": 0.5, "hits": 1, "relevant_total": 2, "retrieved_total": 10, "hit_docs": ["s669_doc_2"], "missed_docs": ["s669_doc_0"]}
+{"query_id": "s686", "recall": 0.5, "hits": 1, "relevant_total": 2, "retrieved_total": 10, "hit_docs": ["s686_doc_0"], "missed_docs": ["s686_doc_1"]}
+{"query_id": "s78", "recall": 0.2, "hits": 1, "relevant_total": 5, "retrieved_total": 10, "hit_docs": ["s78_doc_2"], "missed_docs": ["s78_doc_0", "s78_doc_3", "s78_doc_6", "s78_doc_4"]}
+{"query_id": "s9", "recall": 0.0, "hits": 0, "relevant_total": 5, "retrieved_total": 10, "hit_docs": [], "missed_docs": ["s9_doc_9", "s9_doc_1", "s9_doc_6", "s9_doc_0", "s9_doc_7"]}
+{"query_id": "s90", "recall": 0.4, "hits": 2, "relevant_total": 5, "retrieved_total": 10, "hit_docs": ["s90_doc_5", "s90_doc_0"], "missed_docs": ["s90_doc_1", "s90_doc_3", "s90_doc_6"]}
+{"query_id": "s98", "recall": 1.0, "hits": 1, "relevant_total": 1, "retrieved_total": 10, "hit_docs": ["s98_doc_1"], "missed_docs": []}
+{"query_id": "s99", "recall": 0.4, "hits": 2, "relevant_total": 5, "retrieved_total": 10, "hit_docs": ["s99_doc_5", "s99_doc_1"], "missed_docs": ["s99_doc_2", "s99_doc_0", "s99_doc_6"]}
